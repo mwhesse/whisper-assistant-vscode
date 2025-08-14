@@ -235,11 +235,11 @@ class SpeechTranscription {
     // Try graceful shutdown first with SIGINT (Ctrl+C equivalent)
     this.recordingProcess.kill('SIGINT');
 
-    // Wait for graceful shutdown
+    // Wait for graceful shutdown with longer timeout for file handle release
     const gracefulShutdown = new Promise<void>((resolve) => {
       const timeout = setTimeout(() => {
         resolve();
-      }, 2000); // 2 second timeout
+      }, 5000); // Increased to 5 second timeout for better file handle release
 
       this.recordingProcess!.on('exit', () => {
         clearTimeout(timeout);
@@ -255,9 +255,20 @@ class SpeechTranscription {
         'Whisper Assistant: Force stopping recording process',
       );
       this.recordingProcess.kill('SIGKILL');
+      
+      // Additional wait after force kill to ensure file handle release
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     this.recordingProcess = null;
+    
+    // Additional file handle release wait specifically for Windows sox.exe
+    if (process.platform === 'win32') {
+      this.outputChannel.appendLine(
+        'Whisper Assistant: Waiting for Windows file handle release',
+      );
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
   }
 
   async transcribeRecording(): Promise<Transcription | undefined> {
@@ -277,9 +288,12 @@ class SpeechTranscription {
         `Whisper Assistant: Transcribing recording using ${provider} API`,
       );
 
-      const audioFile = fs.createReadStream(
-        path.join(this.tempDir, `${this.fileName}.wav`),
-      );
+      const audioFilePath = path.join(this.tempDir, `${this.fileName}.wav`);
+      
+      // Verify file exists and is accessible before creating stream
+      if (!fs.existsSync(audioFilePath)) {
+        throw new Error('Recording file not found');
+      }
 
       // Get the configured model or fall back to provider default
       const configuredModel = config.get<string | null>('model');
@@ -303,13 +317,29 @@ class SpeechTranscription {
         return undefined;
       }
 
-      const transcription = await openai.audio.transcriptions.create({
-        file: audioFile,
-        model: model,
-        language: 'en',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        response_format: 'verbose_json',
-      });
+      // Create and properly manage the file stream
+      const audioFile = fs.createReadStream(audioFilePath);
+      
+      let transcription;
+      try {
+        transcription = await openai.audio.transcriptions.create({
+          file: audioFile,
+          model: model,
+          language: 'en',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          response_format: 'verbose_json',
+        });
+      } finally {
+        // Ensure the stream is properly closed to release file handle
+        if (audioFile && !audioFile.destroyed) {
+          audioFile.destroy();
+        }
+        
+        // Additional wait for Windows to ensure file handle is fully released
+        if (process.platform === 'win32') {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
 
       // Convert response to our Transcription interface
       const result: Transcription = {
@@ -365,21 +395,68 @@ class SpeechTranscription {
     }
   }
 
-  deleteFiles(): void {
+  async deleteFiles(): Promise<void> {
     try {
       const wavFile = path.join(this.tempDir, `${this.fileName}.wav`);
       const jsonFile = path.join(this.tempDir, `${this.fileName}.json`);
 
-      if (fs.existsSync(wavFile)) {
-        fs.unlinkSync(wavFile);
+      // Wait a bit more on Windows to ensure file handles are released
+      if (process.platform === 'win32') {
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
-      if (fs.existsSync(jsonFile)) {
-        fs.unlinkSync(jsonFile);
-      }
+
+      // Try to delete files with retry logic for Windows file handle issues
+      const deleteWithRetry = async (filePath: string, maxRetries: number = 3): Promise<void> => {
+        for (let i = 0; i < maxRetries; i++) {
+          try {
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+              return;
+            }
+          } catch (error) {
+            if (i === maxRetries - 1) {
+              throw error;
+            }
+            // Wait before retry, especially important on Windows
+            await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+          }
+        }
+      };
+
+      await deleteWithRetry(wavFile);
+      await deleteWithRetry(jsonFile);
     } catch (error) {
       this.outputChannel.appendLine(
         `Whisper Assistant: Error deleting files: ${error}`,
       );
+    }
+  }
+
+  // Add method to ensure file handles are released before operations
+  private async ensureFileHandleReleased(filePath: string): Promise<void> {
+    if (process.platform === 'win32') {
+      // On Windows, check if file is accessible (not locked)
+      let attempts = 0;
+      const maxAttempts = 10;
+      
+      while (attempts < maxAttempts) {
+        try {
+          // Try to open the file in read mode to check if it's locked
+          const fd = fs.openSync(filePath, 'r');
+          fs.closeSync(fd);
+          return; // File is accessible, handle is released
+        } catch (error) {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            this.outputChannel.appendLine(
+              `Whisper Assistant: Warning - File may still be locked: ${filePath}`,
+            );
+            return;
+          }
+          // Wait before next attempt
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+      }
     }
   }
 

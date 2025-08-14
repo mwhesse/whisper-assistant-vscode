@@ -237,7 +237,7 @@ export async function toggleRecordingCommand(): Promise<void> {
       } finally {
         // Always cleanup, even if there was an error
         if (state.speechTranscription !== undefined) {
-          state.speechTranscription.deleteFiles();
+          await state.speechTranscription.deleteFiles();
         }
         state.isTranscribing = false;
         state.recordingStartTime = undefined;

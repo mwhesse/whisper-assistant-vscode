@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/martin-opensky/whisper-assistant-vscode/main/images/whisper-assistant.png" alt="Whisper Assistant">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisper-assistant-vscode/main/images/whisper-assistant.png" alt="Whisper Assistant">
 </p>
 
 # Whisper Assistant: Your Voice-Driven Coding Companion
@@ -79,19 +79,19 @@ To install and setup Whisper Assistant, follow these steps:
 
 Once initialization is complete, a microphone icon will appear in the bottom right status bar.
 
-  <img src="https://raw.githubusercontent.com/martin-opensky/whisper-assistant-vscode/main/images/microphone.png" alt="Whisper Assistant icon" style="width: 144px; height: auto; ">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisper-assistant-vscode/main/images/microphone.png" alt="Whisper Assistant icon" style="width: 144px; height: auto; ">
 
 2. **Starting the Recording**: Activate the extension by clicking on the quote icon or using the shortcut `Command+M` (for Mac) or `Control+M` (for Windows). You can record for as long as you like, but remember, the longer the recording, the longer the transcription process. The recording time will be displayed in the status bar.
 
-  <img src="https://raw.githubusercontent.com/martin-opensky/whisper-assistant-vscode/main/images/recording.png" alt="Recording icon" style="width: 100px; height: auto;">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisper-assistant-vscode/main/images/recording.png" alt="Recording icon" style="width: 100px; height: auto;">
 
 3. **Stopping the Recording**: Stop the recording using the same shortcut (`Command+M` or `Control+M`). The extension icon in the status bar will change to a loading icon, and a progress message will be displayed, indicating that the transcription is underway.
 
-  <img src="https://raw.githubusercontent.com/martin-opensky/whisper-assistant-vscode/main/images/transcribing.png" alt="Transcribing" style="width: 360px; height: auto; ">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisper-assistant-vscode/main/images/transcribing.png" alt="Transcribing" style="width: 360px; height: auto; ">
 
 4. **Transcription**: Once the transcription is complete, the text will be saved to the clipboard. This allows you to use the transcription in any program, not just within Visual Studio Code. If an editor is active, the transcription will be pasted there automatically.
 
-  <img src="https://raw.githubusercontent.com/martin-opensky/whisper-assistant-vscode/main/images/transcribed.png" alt="Transcribed" style="width: 400px; height: auto; ">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisper-assistant-vscode/main/images/transcribed.png" alt="Transcribed" style="width: 400px; height: auto; ">
 
 **Tip**: A good microphone will improve transcription accuracy, although it is not a requirement.
 
@@ -224,7 +224,7 @@ This extension supports using a local Faster Whisper model through Docker. This 
 To get started with local transcription, use our Docker image:
 
 ```bash
-docker run -d -p 4444:4444 --name whisper-assistant martinopensky/whisper-assistant:latest
+docker run -d -p 4444:4444 --name whisper-assistant mwhesse/whisper-assistant:latest
 ```
 
 Then configure VSCode:
@@ -243,7 +243,7 @@ That's it! You can now use the extension with your local Whisper server.
 If you're experiencing memory issues, you can limit the container's memory:
 
 ```bash
-docker run -d -p 4444:4444 --memory=4g --name whisper-assistant martinopensky/whisper-assistant:latest
+docker run -d -p 4444:4444 --memory=4g --name whisper-assistant mwhesse/whisper-assistant:latest
 ```
 
 #### GPU Support
@@ -251,7 +251,7 @@ docker run -d -p 4444:4444 --memory=4g --name whisper-assistant martinopensky/wh
 If you have a CUDA-capable GPU:
 
 ```bash
-docker run -d -p 4444:4444 --gpus all --name whisper-assistant martinopensky/whisper-assistant:latest
+docker run -d -p 4444:4444 --gpus all --name whisper-assistant mwhesse/whisper-assistant:latest
 ```
 
 #### Container Management
@@ -270,10 +270,10 @@ docker rm whisper-assistant
 docker logs whisper-assistant
 
 # Update to latest version
-docker pull martinopensky/whisper-assistant:latest
+docker pull mwhesse/whisper-assistant:latest
 docker stop whisper-assistant
 docker rm whisper-assistant
-docker run -d -p 4444:4444 martinopensky/whisper-assistant:latest
+docker run -d -p 4444:4444 mwhesse/whisper-assistant:latest
 ```
 
 ### Troubleshooting
@@ -289,7 +289,7 @@ docker run -d -p 4444:4444 martinopensky/whisper-assistant:latest
    - **Memory issues**: Try using the `--memory=4g` flag as shown above
    - **Port conflicts**: If port 4444 is in use, you can map to a different port:
      ```bash
-     docker run -d -p 5000:4444 martinopensky/whisper-assistant:latest
+     docker run -d -p 5000:4444 mwhesse/whisper-assistant:latest
      ```
      Then update the custom endpoint in VSCode settings to `http://localhost:5000`
 

@@ -1,7 +1,7 @@
 {
   "name": "whisperx-assistant",
   "displayName": "WhisperX Assistant",
-  "description": "Leveraging OpenAI's Whisper to transcribe your speech, enhancing your coding efficiency and experience.",
+  "description": "Leveraging OpenAI's Whisper to transcribe your speech, enhancing your coding efficiency and experience. (Enhanced version of Whisper Assistant with improved model selection and OpenAI compatibility.)",
   "version": "1.0.0",
   "publisher": "mwhesse",
   "icon": "images/whisperx-assistant.png",
@@ -10,7 +10,7 @@
     "url": "https://github.com/mwhesse/whisperx-assistant-vscode.git"
   },
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.102.0"
   },
   "categories": [
     "Other"

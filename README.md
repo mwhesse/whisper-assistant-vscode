@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/whisperx-assistant.png" alt="Whisper Assistant">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/whisperx-assistant.png" alt="WhisperX Assistant">
 </p>
 
 # WhisperX Assistant: Your Voice-Driven Coding Companion
@@ -425,3 +425,7 @@ Whisper Assistant offers three ways to transcribe your audio:
    - For Groq: Get your key from [GROQ's console](https://console.groq.com)
 
 When using localhost (default), you can customize the endpoint URL in settings if you're running the Docker container on a different port or host.
+
+## Attribution
+
+[Microphone icons created by kliwir art - Flaticon](https://www.flaticon.com/free-icons/microphone)

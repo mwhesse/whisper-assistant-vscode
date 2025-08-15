@@ -31,8 +31,8 @@ export async function activate(context: vscode.ExtensionContext) {
   try {
     // Create output channel
     const outputChannel =
-      vscode.window.createOutputChannel('Whisper Assistant');
-    outputChannel.appendLine('Activating Whisper Assistant...');
+      vscode.window.createOutputChannel('WhisperX Assistant');
+    outputChannel.appendLine('Activating WhisperX Assistant...');
     state.outputChannel = outputChannel;
 
     // Get the storage path for the extension
@@ -91,7 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Create a new output channel if one doesn't exist
     if (!state.outputChannel) {
       state.outputChannel =
-        vscode.window.createOutputChannel('Whisper Assistant');
+        vscode.window.createOutputChannel('WhisperX Assistant');
       state.outputChannel.show(true);
     }
     state.outputChannel.appendLine(errorMessage);
@@ -105,7 +105,7 @@ export function initializeStatusBarItem(): void {
     vscode.StatusBarAlignment.Right,
     1,
   );
-  state.myStatusBarItem.command = 'whisperAssistant.toggleRecording';
+  state.myStatusBarItem.command = 'whisperXAssistant.toggleRecording';
   state.myStatusBarItem.show(); // Make sure the status bar item is shown
 }
 
@@ -123,7 +123,7 @@ export function initializeWorkspace(): void {
 
 function registerCommands(context: vscode.ExtensionContext): void {
   let toggleRecordingDisposable = vscode.commands.registerCommand(
-    'whisperAssistant.toggleRecording',
+    'whisperXAssistant.toggleRecording',
     toggleRecordingCommand,
   );
   context.subscriptions.push(toggleRecordingDisposable);
@@ -132,7 +132,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
 export async function toggleRecordingCommand(): Promise<void> {
   if (!state.outputChannel) {
     state.outputChannel =
-      vscode.window.createOutputChannel('Whisper Assistant');
+      vscode.window.createOutputChannel('WhisperX Assistant');
     state.outputChannel.show(true);
   }
   state.outputChannel.appendLine('Toggle recording command triggered');
@@ -143,7 +143,7 @@ export async function toggleRecordingCommand(): Promise<void> {
       'Cannot start recording: transcription in progress',
     );
     vscode.window.showInformationMessage(
-      'Whisper Assistant: Please wait for transcription to complete before starting a new recording.',
+      'WhisperX Assistant: Please wait for transcription to complete before starting a new recording.',
     );
     return;
   }
@@ -184,7 +184,7 @@ export async function toggleRecordingCommand(): Promise<void> {
       updateStatusBarItem();
 
       // Get the current API provider
-      const config = vscode.workspace.getConfiguration('whisper-assistant');
+      const config = vscode.workspace.getConfiguration('whisperx-assistant');
       const provider = config.get<string>('apiProvider') || 'localhost';
       const message = `Transcribing using ${
         provider.charAt(0).toUpperCase() + provider.slice(1)
@@ -348,9 +348,9 @@ export function deactivate() {
   state.recordingStartTime = undefined;
 
   // Log the deactivation
-  console.log('Your extension "Whisper Assistant" is now deactivated');
+  console.log('Your extension "WhisperX Assistant" is now deactivated');
 }
 
 export function initializeOutputChannel(): void {
-  state.outputChannel = vscode.window.createOutputChannel('Whisper Assistant');
+  state.outputChannel = vscode.window.createOutputChannel('WhisperX Assistant');
 }

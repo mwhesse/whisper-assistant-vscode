@@ -1,13 +1,13 @@
 {
-  "name": "whisper-assistant",
-  "displayName": "Whisper Assistant",
+  "name": "whisperx-assistant",
+  "displayName": "WhisperX Assistant",
   "description": "Leveraging OpenAI's Whisper to transcribe your speech, enhancing your coding efficiency and experience.",
   "version": "1.2.4",
   "publisher": "mwhesse",
-  "icon": "images/whisper-assistant.png",
+  "icon": "images/whisperx-assistant.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mwhesse/whisper-assistant-vscode.git"
+    "url": "https://github.com/mwhesse/whisperx-assistant-vscode.git"
   },
   "engines": {
     "vscode": "^1.70.0"
@@ -23,22 +23,22 @@
   "contributes": {
     "commands": [
       {
-        "command": "whisperAssistant.toggleRecording",
+        "command": "whisperXAssistant.toggleRecording",
         "title": "Toggle Recording"
       }
     ],
     "keybindings": [
       {
-        "command": "whisperAssistant.toggleRecording",
+        "command": "whisperXAssistant.toggleRecording",
         "key": "ctrl+m",
         "mac": "cmd+m"
       }
     ],
     "configuration": {
       "type": "object",
-      "title": "Whisper Assistant Settings",
+      "title": "WhisperX Assistant Settings",
       "properties": {
-        "whisper-assistant.apiProvider": {
+        "whisperx-assistant.apiProvider": {
           "type": "string",
           "default": "localhost",
           "enum": [
@@ -48,22 +48,22 @@
           ],
           "description": "Select the API provider for transcription"
         },
-        "whisper-assistant.apiKey": {
+        "whisperx-assistant.apiKey": {
           "type": "string",
           "default": "localhost-key-must-be-set",
           "description": "API key for the selected provider (must be set for localhost)"
         },
-        "whisper-assistant.customEndpoint": {
+        "whisperx-assistant.customEndpoint": {
           "type": "string",
           "default": "http://localhost:4444",
           "description": "Custom endpoint URL (localhost only)"
         },
-        "whisper-assistant.customRecordingCommand": {
+        "whisperx-assistant.customRecordingCommand": {
           "type": "string",
           "default": "",
           "description": "Custom recording command (must include $AUDIO_FILE placeholder). Leave empty to use sox (default). Example for macOS: 'ffmpeg -f avfoundation -i :1 -ac 1 -ar 16000 -sample_fmt s16 $AUDIO_FILE'"
         },
-        "whisper-assistant.model": {
+        "whisperx-assistant.model": {
           "type": [
             "string",
             "null"
@@ -76,7 +76,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "build": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint && (rmdir /s /q .vscode-test 2>nul || echo.)",
     "lint": "eslint src --ext ts",

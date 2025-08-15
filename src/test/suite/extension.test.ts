@@ -43,10 +43,10 @@ suite('Extension Test Suite', () => {
   test('API configuration', async () => {
     // Set test configuration
     await vscode.workspace
-      .getConfiguration('whisper-assistant')
+      .getConfiguration('whisperx-assistant')
       .update('apiProvider', 'openai', vscode.ConfigurationTarget.Global);
     await vscode.workspace
-      .getConfiguration('whisper-assistant')
+      .getConfiguration('whisperx-assistant')
       .update('apiKey', 'test-key', vscode.ConfigurationTarget.Global);
 
     const speechTranscription = new SpeechTranscription(
@@ -61,10 +61,10 @@ suite('Extension Test Suite', () => {
 
     // Reset test configuration
     await vscode.workspace
-      .getConfiguration('whisper-assistant')
+      .getConfiguration('whisperx-assistant')
       .update('apiProvider', undefined, vscode.ConfigurationTarget.Global);
     await vscode.workspace
-      .getConfiguration('whisper-assistant')
+      .getConfiguration('whisperx-assistant')
       .update('apiKey', undefined, vscode.ConfigurationTarget.Global);
   });
 
@@ -105,7 +105,7 @@ suite('Extension Test Suite', () => {
   test('Error handling for missing API key', () => {
     // Clear API key configuration
     vscode.workspace
-      .getConfiguration('whisper-assistant')
+      .getConfiguration('whisperx-assistant')
       .update('apiKey', '', vscode.ConfigurationTarget.Global);
 
     assert.throws(() => {
@@ -119,10 +119,10 @@ suite('Extension Test Suite', () => {
 
     for (const provider of providers) {
       await vscode.workspace
-        .getConfiguration('whisper-assistant')
+        .getConfiguration('whisperx-assistant')
         .update('apiProvider', provider, vscode.ConfigurationTarget.Global);
       await vscode.workspace
-        .getConfiguration('whisper-assistant')
+        .getConfiguration('whisperx-assistant')
         .update('apiKey', 'test-key', vscode.ConfigurationTarget.Global);
 
       const speechTranscription = new SpeechTranscription(
@@ -137,10 +137,10 @@ suite('Extension Test Suite', () => {
 
     // Reset configuration
     await vscode.workspace
-      .getConfiguration('whisper-assistant')
+      .getConfiguration('whisperx-assistant')
       .update('apiProvider', undefined, vscode.ConfigurationTarget.Global);
     await vscode.workspace
-      .getConfiguration('whisper-assistant')
+      .getConfiguration('whisperx-assistant')
       .update('apiKey', undefined, vscode.ConfigurationTarget.Global);
   });
 });

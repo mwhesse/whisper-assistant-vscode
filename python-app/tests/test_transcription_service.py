@@ -154,3 +154,67 @@ class TestTranscriptionService:
         assert result["segments"][1]["text"] == "world"
         assert result["segments"][0]["id"] == 0
         assert result["segments"][1]["id"] == 1
+    
+    @patch('transcription_service.WhisperModel')
+    @pytest.mark.asyncio
+    async def test_transcribe_audio_with_model_name(self, mock_whisper_model):
+        """Test transcription with specific model name"""
+        mock_model = MagicMock()
+        mock_whisper_model.return_value = mock_model
+        
+        mock_segment = MagicMock()
+        mock_segment.start = 0.0
+        mock_segment.end = 1.0
+        mock_segment.text = "Test with large model"
+        
+        mock_info = MagicMock()
+        mock_info.language = "en"
+        
+        mock_model.transcribe.return_value = ([mock_segment], mock_info)
+        
+        service = TranscriptionService()
+        
+        # Test transcription with specific model name
+        result = await service.transcribe_audio(b"fake audio content", "en", "large")
+        
+        # Verify the result
+        assert result["text"] == "Test with large model"
+        assert result["language"] == "en"
+        
+        # Verify that WhisperModel was called twice (once for init, once for model switch)
+        assert mock_whisper_model.call_count == 2
+        # Check the second call was with the new model
+        mock_whisper_model.assert_called_with("large", device="cpu", compute_type="int8")
+    
+    @patch('transcription_service.WhisperModel')
+    @pytest.mark.asyncio
+    async def test_transcribe_audio_default_model_name(self, mock_whisper_model):
+        """Test transcription with default model name (no switching)"""
+        mock_model = MagicMock()
+        mock_whisper_model.return_value = mock_model
+        
+        # Mock the model_name attribute to match config default
+        mock_model.model_name = "base"
+        
+        mock_segment = MagicMock()
+        mock_segment.start = 0.0
+        mock_segment.end = 1.0
+        mock_segment.text = "Test with default model"
+        
+        mock_info = MagicMock()
+        mock_info.language = "en"
+        
+        mock_model.transcribe.return_value = ([mock_segment], mock_info)
+        
+        service = TranscriptionService()
+        service.model = mock_model  # Set the model directly to avoid init call
+        
+        # Test transcription with default model name (should not switch models)
+        result = await service.transcribe_audio(b"fake audio content", "en", "base")
+        
+        # Verify the result
+        assert result["text"] == "Test with default model"
+        assert result["language"] == "en"
+        
+        # Verify that WhisperModel was called only once during init (no model switching)
+        assert mock_whisper_model.call_count == 1

@@ -23,7 +23,7 @@ export interface Transcription {
   language: string;
 }
 
-export type WhisperModel = 'whisper-1' | 'whisper-large-v3-turbo';
+export type WhisperModel = 'base' | 'whisper-1' | 'whisper-large-v3-turbo';
 
 type ApiProvider = 'localhost' | 'openai' | 'groq';
 
@@ -35,7 +35,7 @@ interface ApiConfig {
 const PROVIDER_MODELS: Record<ApiProvider, WhisperModel> = {
   openai: 'whisper-1',
   groq: 'whisper-large-v3-turbo',
-  localhost: 'whisper-1', // default to OpenAI model for localhost
+  localhost: 'base',
 };
 
 class SpeechTranscription {

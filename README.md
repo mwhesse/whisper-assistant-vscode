@@ -2,9 +2,9 @@
   <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/whisperx-assistant.png" alt="Whisper Assistant">
 </p>
 
-# Whisper Assistant: Your Voice-Driven Coding Companion
+# WhisperX Assistant: Your Voice-Driven Coding Companion
 
-Whisper Assistant is an extension for Visual Studio Code that transcribes your spoken words into text within the VSCode & Cursor editor. This hands-free approach to coding allows you to focus on your ideas instead of your typing.
+WhisperX Assistant is an extension for Visual Studio Code that transcribes your spoken words into text within the VSCode & Cursor editor. This hands-free approach to coding allows you to focus on your ideas instead of your typing.
 
 ✨ **Features:**
 
@@ -13,11 +13,11 @@ Whisper Assistant is an extension for Visual Studio Code that transcribes your s
 - Configurable recording tools (ffmpeg, arecord, etc.) for advanced users
 - Optimized for integration with AI coding assistants like Cursor
 
-Whisper Assistant can also be integrated with other powerful AI tools, such as Chat GPT-4 or [Cursor](https://www.cursor.so/), to create a dynamic, AI-driven development environment.
+WhisperX Assistant can also be integrated with other powerful AI tools, such as Chat GPT-4 or [Cursor](https://www.cursor.so/), to create a dynamic, AI-driven development environment.
 
 # Powered by OpenAI Whisper
 
-By default, Whisper Assistant utilizes Whisper AI on your _local machine_, offering a free voice transcription service. For this, the base model of Whisper is used, balancing accuracy and performance. **In the future, we will support other models.**
+By default, WhisperX Assistant utilizes Whisper AI on your _local machine_, offering a free voice transcription service. For this, the base model of Whisper is used, balancing accuracy and performance. **In the future, we will support other models.**
 
 There is also the option to use the OpenAI API or Groq API to transcribe your audio for remote transcription. **Note: This requires an API key.**
 
@@ -25,9 +25,9 @@ For more details about Whisper, visit the [Whisper OpenAI GitHub page](https://g
 
 ## Getting Started: Installation Instructions
 
-To install and setup Whisper Assistant, follow these steps:
+To install and setup WhisperX Assistant, follow these steps:
 
-1.  **Install a recording tool**: Whisper Assistant uses SoX by default for microphone recording, but you can also configure a custom recording command using alternatives like ffmpeg.
+1.  **Install a recording tool**: WhisperX Assistant uses SoX by default for microphone recording, but you can also configure a custom recording command using alternatives like ffmpeg.
 
     ### Option A: SoX (Default - Recommended)
 
@@ -71,15 +71,15 @@ To install and setup Whisper Assistant, follow these steps:
 2.  Install Docker to enable the local Whisper model or use the OpenAI API or Groq API for remote transcription.
     - If using local transcription, follow the instructions in the [Local Development with Faster Whisper](#local-development-with-faster-whisper) section.
     - If using remote transcription, follow the instructions in the [Multiple API Options](#multiple-api-options) section.
-3.  Install the Whisper Assistant extension into Visual Studio Code or Cursor.
+3.  Install the WhisperX Assistant extension into Visual Studio Code or Cursor.
 
-# How to Use Whisper Assistant
+# How to Use WhisperX Assistant
 
 1. **Initialization**: Upon loading Visual Studio Code, the extension verifies the correct installation of SoX (or your custom recording command if configured). If any issues are detected, an error message will be displayed.
 
 Once initialization is complete, a microphone icon will appear in the bottom right status bar.
 
-  <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/microphone.png" alt="Whisper Assistant icon" style="width: 144px; height: auto; ">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/microphone.png" alt="WhisperX Assistant icon" style="width: 144px; height: auto; ">
 
 2. **Starting the Recording**: Activate the extension by clicking on the quote icon or using the shortcut `Command+M` (for Mac) or `Control+M` (for Windows). You can record for as long as you like, but remember, the longer the recording, the longer the transcription process. The recording time will be displayed in the status bar.
 
@@ -99,7 +99,7 @@ Once initialization is complete, a microphone icon will appear in the bottom rig
 
 ## Custom Recording Commands
 
-Whisper Assistant uses SoX by default, but you can configure a custom recording command if you prefer alternatives like ffmpeg or need to work around platform-specific issues.
+WhisperX Assistant uses SoX by default, but you can configure a custom recording command if you prefer alternatives like ffmpeg or need to work around platform-specific issues.
 
 ### When to Use Custom Recording Commands
 
@@ -110,7 +110,7 @@ Whisper Assistant uses SoX by default, but you can configure a custom recording 
 ### Configuration
 
 1. Open VS Code settings (`Cmd/Ctrl + ,`)
-2. Search for "Whisper Assistant"
+2. Search for "WhisperX Assistant"
 3. Find "Custom Recording Command"
 4. Enter your command with the `$AUDIO_FILE` placeholder
 
@@ -191,9 +191,9 @@ arecord -l
 ffmpeg -list_devices true -f dshow -i dummy
 ```
 
-## Using Whisper Assistant with Cursor.so
+## Using WhisperX Assistant with Cursor.so
 
-To enhance your development experience with Cursor.so and Whisper Assistant, follow these simple steps:
+To enhance your development experience with Cursor.so and WhisperX Assistant, follow these simple steps:
 
 1.  Start the recording: Press `Command+M` (Mac) or `Control+M` (Windows).
 2.  Speak your instructions clearly.
@@ -203,11 +203,11 @@ To enhance your development experience with Cursor.so and Whisper Assistant, fol
     _Important: Do this **before** the transcription completes._
 5.  The transcribed text will automatically populate the Cursor dialog. Here, you can edit the text or add files/docs, then press `Enter` to execute the GPT query.
 
-By integrating Cursor.so with Whisper Assistant, you can provide extensive instructions without the need for typing, significantly enhancing your development workflow.
+By integrating Cursor.so with WhisperX Assistant, you can provide extensive instructions without the need for typing, significantly enhancing your development workflow.
 
 # Platform Compatibility
 
-Whisper Assistant has been tested and supports:
+WhisperX Assistant has been tested and supports:
 
 - **macOS**: Full support with SoX (default) and ffmpeg (custom)
 - **Windows**: Full support with SoX (default) and ffmpeg (custom)
@@ -230,7 +230,7 @@ docker run -d -p 4445:4445 --name whisperx-assistant mwhesse/whisperx-assistant:
 Then configure VSCode:
 
 1. Open VSCode settings (File > Preferences > Settings)
-2. Search for "Whisper Assistant"
+2. Search for "WhisperX Assistant"
 3. Set "Api Provider" to "localhost"
 4. Set "Api Key" to any non-empty string (e.g., "localhost-dummy-key")
 
@@ -305,7 +305,7 @@ If you want to customize the server, you can build from our Dockerfile:
    ```
 ## Running the Python App Outside Docker
 
-The Whisper Assistant API is now available as a standalone Python application that can be run outside of Docker. This is useful for development, testing, or when you prefer not to use Docker.
+The WhisperX Assistant API is now available as a standalone Python application that can be run outside of Docker. This is useful for development, testing, or when you prefer not to use Docker.
 
 ### Python App Structure
 

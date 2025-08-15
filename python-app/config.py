@@ -23,7 +23,7 @@ class Config:
     TEMP_FILE_SUFFIX: str = os.getenv("TEMP_FILE_SUFFIX", ".wav")
     
     # API settings
-    API_TITLE: str = os.getenv("API_TITLE", "Whisper Assistant API")
+    API_TITLE: str = os.getenv("API_TITLE", "WhisperX Assistant API")
     API_VERSION: str = os.getenv("API_VERSION", "1.0.0")
 
 config = Config()

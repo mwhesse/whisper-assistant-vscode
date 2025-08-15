@@ -1,15 +1,17 @@
-# Whisper Assistant API
+# WhisperX Assistant API
 
 A FastAPI-based audio transcription service using OpenAI's Whisper model via the `faster-whisper` library.
 
 ## Features
 
-- Audio transcription using Whisper models
-- OpenAI-compatible API endpoints
-- Support for multiple languages
-- Configurable via environment variables
-- Comprehensive test suite
-- Docker support
+- **Interactive Dashboard**: Beautiful web interface showing API status and available models
+- **Audio transcription**: Using Whisper models with OpenAI-compatible API endpoints
+- **Multiple Whisper models**: Support for tiny, base, small, medium, large, and large-v3 models
+- **Multi-language support**: Transcribe audio in multiple languages
+- **Configurable**: Via environment variables and command-line options
+- **Comprehensive test suite**: Full test coverage with pytest
+- **Docker support**: Easy deployment with Docker
+- **GPU acceleration**: CUDA support for faster inference
 
 ## Project Structure
 
@@ -18,14 +20,21 @@ python-app/
 ├── main.py                    # FastAPI application entry point
 ├── config.py                  # Configuration management
 ├── transcription_service.py   # Transcription service logic
+├── models_service.py          # Whisper models information service
+├── run.py                     # Convenience script to run the app
 ├── requirements.txt           # Production dependencies
 ├── test_requirements.txt      # Test dependencies
 ├── pytest.ini               # Pytest configuration
-├── tests/                    # Test suite
+├── .env.example              # Environment variables example
+├── .gitignore               # Git ignore rules
+├── templates/               # HTML templates for dashboard
+│   └── dashboard.html       # Interactive dashboard template
+├── tests/                   # Test suite
 │   ├── __init__.py
 │   ├── test_main.py
-│   └── test_transcription_service.py
-└── README.md                 # This file
+│   ├── test_transcription_service.py
+│   └── test_models_service.py
+└── README.md                # This file
 ```
 
 ## Installation and Setup
@@ -104,6 +113,12 @@ python main.py
 
 The API will be available at `http://localhost:4445`
 
+**🎉 New Dashboard**: Visit `http://localhost:4445` in your browser to see the interactive dashboard with:
+- Real-time service status
+- Available Whisper models information
+- API endpoints documentation
+- Current configuration details
+
 ### Production Mode
 
 ```bash
@@ -134,20 +149,34 @@ The application can be configured using environment variables:
 | `WHISPER_COMPUTE_TYPE` | `int8` | Compute type for inference |
 | `CORS_ORIGINS` | `*` | Allowed CORS origins (comma-separated) |
 | `DEFAULT_LANGUAGE` | `en` | Default transcription language |
-| `API_TITLE` | `Whisper Assistant API` | API title |
+| `API_TITLE` | `WhisperX Assistant API` | API title |
 | `API_VERSION` | `1.0.0` | API version |
 
 ## API Endpoints
+
+### Dashboard (New!)
+```
+GET /
+```
+Interactive web dashboard showing service status, available models, and API documentation.
+
+### API Information
+```
+GET /api/info
+```
+Get API information in JSON format (for programmatic access).
+
+### Models Information (New!)
+```
+GET /v1/models
+```
+Get detailed information about available Whisper models and current model configuration.
 
 ### Health Check
 ```
 GET /v1/health
 ```
-
-### Root Information
-```
-GET /
-```
+Enhanced health check with model information and available models list.
 
 ### Audio Transcription
 ```

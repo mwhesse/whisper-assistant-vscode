@@ -20,19 +20,34 @@ class TranscriptionService:
         )
         logger.info("Whisper model initialized successfully")
     
-    async def transcribe_audio(self, audio_content: bytes, language: str = None) -> Dict[str, Any]:
+    async def transcribe_audio(self, audio_content: bytes, language: str = None, model_name: str = None) -> Dict[str, Any]:
         """
         Transcribe audio content to text
         
         Args:
             audio_content: Raw audio file content
             language: Language code for transcription (optional)
+            model_name: Whisper model name to use for transcription (optional)
             
         Returns:
             Dictionary containing transcription results
         """
         if language is None:
             language = config.DEFAULT_LANGUAGE
+        
+        # Use provided model_name or fall back to config default
+        if model_name is None:
+            model_name = config.WHISPER_MODEL
+        
+        # Check if we need to switch models
+        current_model_name = getattr(self.model, 'model_name', config.WHISPER_MODEL)
+        if model_name != current_model_name:
+            logger.info(f"Switching from model '{current_model_name}' to '{model_name}'")
+            self.model = WhisperModel(
+                model_name,
+                device=config.WHISPER_DEVICE,
+                compute_type=config.WHISPER_COMPUTE_TYPE
+            )
             
         # Save uploaded file temporarily
         with tempfile.NamedTemporaryFile(delete=False, suffix=config.TEMP_FILE_SUFFIX) as temp_file:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Convenience script to run the Whisper Assistant API
+Convenience script to run the WhisperX Assistant API
 """
 import argparse
 import os
@@ -49,7 +49,7 @@ def install_dependencies():
             print("Binary-only installation failed, trying individual packages...")
             try:
                 # Install packages individually
-                packages = ['fastapi==0.104.1', 'uvicorn[standard]==0.24.0', 'python-multipart==0.0.6']
+                packages = ['fastapi==0.104.1', 'uvicorn[standard]==0.24.0', 'python-multipart==0.0.6', 'jinja2==3.1.2']
                 for package in packages:
                     subprocess.run([sys.executable, '-m', 'pip', 'install', package], check=True)
                 
@@ -59,12 +59,12 @@ def install_dependencies():
                 return True
             except subprocess.CalledProcessError:
                 print("Failed to install dependencies. Please install manually:")
-                print("pip install fastapi uvicorn[standard] python-multipart")
+                print("pip install fastapi uvicorn[standard] python-multipart jinja2")
                 print("pip install --only-binary=all faster-whisper")
                 return False
 
 def main():
-    parser = argparse.ArgumentParser(description='Run Whisper Assistant API')
+    parser = argparse.ArgumentParser(description='Run WhisperX Assistant API')
     parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
     parser.add_argument('--port', type=int, default=4445, help='Port to bind to')
     parser.add_argument('--model', default='base', 
@@ -85,7 +85,7 @@ def main():
     os.environ['WHISPER_MODEL'] = args.model
     os.environ['WHISPER_DEVICE'] = args.device
     
-    print("Whisper Assistant API Setup")
+    print("WhisperX Assistant API Setup")
     print("=" * 30)
     
     # Check FFmpeg

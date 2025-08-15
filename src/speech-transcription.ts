@@ -68,7 +68,7 @@ class SpeechTranscription {
 
     const baseURLs: Record<ApiProvider, string> = {
       localhost:
-        (config.get('customEndpoint') || 'http://localhost:4444') + '/v1',
+        (config.get('customEndpoint') || 'http://localhost:4445') + '/v1',
       openai: 'https://api.openai.com/v1',
       groq: 'https://api.groq.com/openai/v1',
     };

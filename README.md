@@ -224,7 +224,7 @@ This extension supports using a local Faster Whisper model through Docker. This 
 To get started with local transcription, use our Docker image:
 
 ```bash
-docker run -d -p 4444:4444 --name whisperx-assistant mwhesse/whisperx-assistant:latest
+docker run -d -p 4445:4445 --name whisperx-assistant mwhesse/whisperx-assistant:latest
 ```
 
 Then configure VSCode:
@@ -243,7 +243,7 @@ That's it! You can now use the extension with your local Whisper server.
 If you're experiencing memory issues, you can limit the container's memory:
 
 ```bash
-docker run -d -p 4444:4444 --memory=4g --name whisperx-assistant mwhesse/whisperx-assistant:latest
+docker run -d -p 4445:4445 --memory=4g --name whisperx-assistant mwhesse/whisperx-assistant:latest
 ```
 
 #### GPU Support
@@ -251,7 +251,7 @@ docker run -d -p 4444:4444 --memory=4g --name whisperx-assistant mwhesse/whisper
 If you have a CUDA-capable GPU:
 
 ```bash
-docker run -d -p 4444:4444 --gpus all --name whisperx-assistant mwhesse/whisperx-assistant:latest
+docker run -d -p 4445:4445 --gpus all --name whisperx-assistant mwhesse/whisperx-assistant:latest
 ```
 
 #### Container Management
@@ -273,7 +273,7 @@ docker logs whisperx-assistant
 docker pull mwhesse/whisperx-assistant:latest
 docker stop whisperx-assistant
 docker rm whisperx-assistant
-docker run -d -p 4444:4444 mwhesse/whisperx-assistant:latest
+docker run -d -p 4445:4445 mwhesse/whisperx-assistant:latest
 ```
 
 ### Troubleshooting
@@ -281,17 +281,17 @@ docker run -d -p 4444:4444 mwhesse/whisperx-assistant:latest
 1. Check if the server is running:
 
    ```bash
-   curl http://localhost:4444/v1/health
+   curl http://localhost:4445/v1/health
    ```
 
 2. Common issues:
    - **First startup delay**: The model is downloaded on first use, which may take a few minutes
    - **Memory issues**: Try using the `--memory=4g` flag as shown above
-   - **Port conflicts**: If port 4444 is in use, you can map to a different port:
-     ```bash
-     docker run -d -p 5000:4444 mwhesse/whisperx-assistant:latest
-     ```
-     Then update the custom endpoint in VSCode settings to `http://localhost:5000`
+   - **Port conflicts**: If port 4445 is in use, you can map to a different port:
+         ```bash
+         docker run -d -p 5000:4445 mwhesse/whisperx-assistant:latest
+         ```
+         Then update the custom endpoint in VSCode settings to `http://localhost:5000`
 
 ### Advanced: Building from Source
 
@@ -301,8 +301,107 @@ If you want to customize the server, you can build from our Dockerfile:
 2. Build the image:
    ```bash
    docker build -t whisperx-assistant-local .
-   docker run -d -p 4444:4444 whisperx-assistant-local
+   docker run -d -p 4445:4445 whisperx-assistant-local
    ```
+## Running the Python App Outside Docker
+
+The Whisper Assistant API is now available as a standalone Python application that can be run outside of Docker. This is useful for development, testing, or when you prefer not to use Docker.
+
+### Python App Structure
+
+The Python application is located in the [`python-app/`](python-app/) directory with the following structure:
+
+```
+python-app/
+├── main.py                    # FastAPI application entry point
+├── config.py                  # Configuration management
+├── transcription_service.py   # Transcription service logic
+├── run.py                     # Convenience script to run the app
+├── requirements.txt           # Production dependencies
+├── test_requirements.txt      # Test dependencies
+├── pytest.ini               # Pytest configuration
+├── .env.example              # Environment variables example
+├── .gitignore               # Git ignore rules
+├── README.md                # Detailed Python app documentation
+└── tests/                   # Test suite
+    ├── __init__.py
+    ├── test_main.py
+    └── test_transcription_service.py
+```
+
+### Quick Start (Python App)
+
+1. **Prerequisites:**
+   - Python 3.10 or higher
+   - FFmpeg installed on your system
+
+2. **Setup:**
+   ```bash
+   cd python-app
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Run the application:**
+   ```bash
+   python run.py
+   ```
+   
+   Or use the convenience script with options:
+   ```bash
+   python run.py --model small --port 8000 --install-deps
+   ```
+
+4. **Test the application:**
+   ```bash
+   pip install -r test_requirements.txt
+   pytest
+   ```
+
+### Configuration Options
+
+The Python app can be configured using environment variables or command-line arguments:
+
+- `--model`: Whisper model size (tiny, base, small, medium, large)
+- `--device`: Device for inference (cpu, cuda)
+- `--host`: Host to bind to (default: 0.0.0.0)
+- `--port`: Port to bind to (default: 4445)
+- `--install-deps`: Automatically install dependencies
+
+For more detailed information about running and configuring the Python application, see the [`python-app/README.md`](python-app/README.md) file.
+
+### Benefits of Running Outside Docker
+
+- **Development**: Easier debugging and code modification
+- **Testing**: Run comprehensive test suites
+- **Performance**: Direct access to system resources
+- **Customization**: Easy configuration and model selection
+- **Integration**: Better integration with development tools
+
+### Docker Commands Quick Reference
+
+**Build the Docker image:**
+```bash
+docker build -t whisperx-assistant .
+```
+
+**Run the container:**
+```bash
+docker run -d -p 4445:4445 --name whisperx-assistant whisperx-assistant
+```
+
+**Stop/Start/Remove container:**
+```bash
+docker stop whisperx-assistant
+docker start whisperx-assistant
+docker rm whisperx-assistant
+```
+
+**View logs:**
+```bash
+docker logs whisperx-assistant
+```
 
 # Multiple API Options
 

@@ -9,3 +9,16 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+node_modules/**
+npm-debug.log
+.nyc_output
+coverage
+.DS_Store
+Thumbs.db
+esbuild.js
+eslint.config.js
+.prettierrc
+.eslintrc.json
+package-lock.json
+python-app/**
+Dockerfile

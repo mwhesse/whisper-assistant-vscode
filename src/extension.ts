@@ -53,9 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
     outputChannel.appendLine('Initialized SpeechTranscription');
 
     // Check if Sox is installed (we still need this for recording)
-    const isSoxInstalled = await state.speechTranscription?.checkIfInstalled(
-      'sox',
-    );
+    const isSoxInstalled = await state.speechTranscription?.checkIfInstalled();
     outputChannel.appendLine(
       `Sox installation status: ${
         isSoxInstalled ? 'installed' : 'not installed'
@@ -269,8 +267,8 @@ function updateStatusBarItem(): void {
     }`;
   } else {
     state.myStatusBarItem.text = state.isTranscribing
-      ? `$(loading~spin) Whisper`
-      : `$(mic) Whisper`;
+      ? `$(loading~spin) WhisperX`
+      : `$(mic) WhisperX`;
   }
 }
 

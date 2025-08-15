@@ -2,7 +2,7 @@
   "name": "whisperx-assistant",
   "displayName": "WhisperX Assistant",
   "description": "Leveraging OpenAI's Whisper to transcribe your speech, enhancing your coding efficiency and experience.",
-  "version": "1.2.4",
+  "version": "1.0.0",
   "publisher": "mwhesse",
   "icon": "images/whisperx-assistant.png",
   "repository": {
@@ -70,13 +70,18 @@
           ],
           "default": null,
           "description": "Specify the Whisper model to use for transcription. Leave as null to use the provider's default model. Examples: 'whisper-1', 'whisper-large-v3-turbo', or any other model supported by your provider."
+        },
+        "whisperx-assistant.soxExecutablePath": {
+          "type": "string",
+          "default": "sox",
+          "description": "Path to the sox executable. On Windows, you may need to specify the full path (e.g., 'C:\\Program Files\\sox\\sox.exe'). Leave as 'sox' if it's in your PATH."
         }
       }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "build": "tsc -p ./",
+    "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint && (rmdir /s /q .vscode-test 2>nul || echo.)",
     "lint": "eslint src --ext ts",

@@ -79,11 +79,23 @@ class SpeechTranscription {
     };
   }
 
-  async checkIfInstalled(command: string): Promise<boolean> {
+  async checkIfInstalled(): Promise<boolean> {
     try {
-      await execAsync(`${command} --help`);
+      const config = vscode.workspace.getConfiguration('whisperx-assistant');
+      const soxPath = config.get<string>('soxExecutablePath') || 'sox';
+      
+      // Use a more reliable check for Windows
+      if (process.platform === 'win32') {
+        // Try to run sox with --version which is more reliable than --help on Windows
+        await execAsync(`"${soxPath}" --version`);
+      } else {
+        await execAsync(`"${soxPath}" --help`);
+      }
       return true;
     } catch (error) {
+      this.outputChannel.appendLine(
+        `WhisperX Assistant: Sox check failed: ${error}`,
+      );
       return false;
     }
   }
@@ -166,7 +178,10 @@ class SpeechTranscription {
 
   private startSoxRecording(outputPath: string): void {
     try {
-      this.recordingProcess = spawn('sox', [
+      const config = vscode.workspace.getConfiguration('whisperx-assistant');
+      const soxPath = config.get<string>('soxExecutablePath') || 'sox';
+      
+      this.recordingProcess = spawn(soxPath, [
         '-d',
         '-b',
         '16',
@@ -184,7 +199,7 @@ class SpeechTranscription {
         `WhisperX Assistant: Error starting sox recording: ${error}`,
       );
       vscode.window.showErrorMessage(
-        'WhisperX Assistant: Failed to start sox recording. Please ensure sox is installed.',
+        'WhisperX Assistant: Failed to start sox recording. Please ensure sox is installed and the path is correct in settings.',
       );
       throw error; // Re-throw so startRecording() can return false
     }

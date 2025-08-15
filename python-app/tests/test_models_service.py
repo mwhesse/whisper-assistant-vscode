@@ -32,25 +32,7 @@ class TestModelsService:
             assert "parameters" in model
             assert "relative_speed" in model
             assert "vram_required" in model
-    
-    def test_get_current_model_info(self):
-        """Test getting current model information"""
-        service = ModelsService("base")
-        info = service.get_current_model_info()
         
-        assert info["name"] == "base"
-        assert "size" in info
-        assert "description" in info
-    
-    def test_get_current_model_info_custom(self):
-        """Test getting info for custom model not in predefined list"""
-        service = ModelsService("custom-model")
-        info = service.get_current_model_info()
-        
-        assert info["name"] == "custom-model"
-        assert info["size"] == "Unknown"
-        assert info["description"] == "Custom model"
-    
     def test_is_model_available(self):
         """Test checking if model is available"""
         service = ModelsService()

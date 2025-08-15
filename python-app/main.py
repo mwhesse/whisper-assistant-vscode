@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Response
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize models service
-models_service = ModelsService(current_model=config.WHISPER_MODEL)
+models_service = ModelsService()
 
 # Initialize templates
 templates = Jinja2Templates(directory="templates")
@@ -40,8 +40,8 @@ app.add_middleware(
 @app.post("/v1/audio/transcriptions")
 async def transcribe_audio(
     file: UploadFile = File(...),
-    model_name: str = "base",  # Renamed parameter to avoid conflict
-    language: str = config.DEFAULT_LANGUAGE
+    model: str = Form("base"),  # OpenAI standard parameter name
+    language: str = Form(config.DEFAULT_LANGUAGE)
 ):
     """Transcribe audio file to text"""
     
@@ -50,10 +50,9 @@ async def transcribe_audio(
     print(f"   📁 file.filename: {file.filename}")
     print(f"   📁 file.content_type: {file.content_type}")
     print(f"   📁 file.size: {getattr(file, 'size', 'unknown')}")
-    print(f"   🤖 model_name: {model_name}")
+    print(f"   🤖 model: {model}")
     print(f"   🌍 language: {language}")
     print(f"   ⚙️  config.DEFAULT_LANGUAGE: {config.DEFAULT_LANGUAGE}")
-    print(f"   ⚙️  config.WHISPER_MODEL: {config.WHISPER_MODEL}")
     
     try:
         # Validate file type
@@ -72,13 +71,13 @@ async def transcribe_audio(
             logger.error(f"TRANSCRIPTION ERROR: {error_msg}")
             raise HTTPException(status_code=400, detail=error_msg)
         
-        logger.info(f"Processing file: {file.filename}, size: {actual_size} bytes, language: {language}, model: {model_name}")
+        logger.info(f"Processing file: {file.filename}, size: {actual_size} bytes, language: {language}, model: {model}")
         
         # Log what we're passing to the transcription service
-        print(f"   🔄 Calling transcription_service.transcribe_audio(content_size={actual_size}, language='{language}', model_name='{model_name}')")
+        print(f"   🔄 Calling transcription_service.transcribe_audio(content_size={actual_size}, language='{language}', model_name='{model}')")
         
         # Transcribe using the service
-        result = await transcription_service.transcribe_audio(content, language, model_name)
+        result = await transcription_service.transcribe_audio(content, language, model)
         
         print(f"   ✅ Transcription successful: {len(result.get('text', ''))} characters")
         logger.info(f"Transcription successful: {len(result.get('text', ''))} characters")
@@ -100,7 +99,6 @@ async def health_check():
     """Check if the API is running"""
     return {
         "status": "ok",
-        "model": config.WHISPER_MODEL,
         "device": config.WHISPER_DEVICE,
         "version": config.API_VERSION,
         "available_models": [model["name"] for model in models_service.get_available_models()]
@@ -110,9 +108,7 @@ async def health_check():
 async def get_models():
     """Get information about available Whisper models with download status"""
     return {
-        "current_model": config.WHISPER_MODEL,
         "available_models": models_service.get_models_with_status(),
-        "current_model_info": models_service.get_current_model_info(),
         "downloaded_models": models_service.get_downloaded_models()
     }
 
@@ -154,7 +150,6 @@ async def dashboard(request: Request):
     try:
         # Get available models with download status
         available_models = models_service.get_models_with_status()
-        current_model_info = models_service.get_current_model_info()
         
         # Prepare template context
         context = {
@@ -164,7 +159,6 @@ async def dashboard(request: Request):
             "status": "Online",
             "device": config.WHISPER_DEVICE.upper(),
             "port": config.PORT,
-            "current_model": config.WHISPER_MODEL,
             "available_models": available_models
         }
         
@@ -177,7 +171,6 @@ async def dashboard(request: Request):
             "message": config.API_TITLE,
             "version": config.API_VERSION,
             "status": "Online",
-            "current_model": config.WHISPER_MODEL,
             "device": config.WHISPER_DEVICE,
             "docs": "/docs",
             "health_check": "/v1/health",
@@ -191,7 +184,6 @@ async def api_info():
         "message": config.API_TITLE,
         "version": config.API_VERSION,
         "status": "Online",
-        "current_model": config.WHISPER_MODEL,
         "device": config.WHISPER_DEVICE,
         "available_models": models_service.get_available_models(),
         "docs": "/docs",

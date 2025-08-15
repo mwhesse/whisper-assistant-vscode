@@ -74,30 +74,14 @@ class ModelsService:
         }
     ]
     
-    def __init__(self, current_model: str = "base"):
-        """Initialize the models service with current model"""
-        self.current_model = current_model
-        logger.info(f"Models service initialized with current model: {current_model}")
+    def __init__(self):
+        """Initialize the models service"""
+        logger.info(f"Models service initialized")
     
     def get_available_models(self) -> List[Dict[str, Any]]:
         """Get list of all available Whisper models"""
         return self.AVAILABLE_MODELS.copy()
-    
-    def get_current_model_info(self) -> Dict[str, Any]:
-        """Get information about the currently loaded model"""
-        for model in self.AVAILABLE_MODELS:
-            if model["name"] == self.current_model:
-                return model.copy()
         
-        # If current model not found in predefined list, return basic info
-        return {
-            "name": self.current_model,
-            "size": "Unknown",
-            "description": "Custom model",
-            "parameters": "Unknown",
-            "relative_speed": "Unknown"
-        }
-    
     def is_model_available(self, model_name: str) -> bool:
         """Check if a model is available"""
         return any(model["name"] == model_name for model in self.AVAILABLE_MODELS)

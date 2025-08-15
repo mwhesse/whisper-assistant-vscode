@@ -12,15 +12,16 @@ class TranscriptionService:
     
     def __init__(self):
         """Initialize the Whisper model"""
-        logger.info(f"Initializing Whisper model: {config.WHISPER_MODEL}")
+        logger.info(f"Initializing with default Whisper model: {config.DEFAULT_WHISPER_MODEL}")
+        self.current_model_name = config.DEFAULT_WHISPER_MODEL
         self.model = WhisperModel(
-            config.WHISPER_MODEL, 
+            config.DEFAULT_WHISPER_MODEL, 
             device=config.WHISPER_DEVICE, 
             compute_type=config.WHISPER_COMPUTE_TYPE
         )
         logger.info("Whisper model initialized successfully")
     
-    async def transcribe_audio(self, audio_content: bytes, language: str = None, model_name: str = None) -> Dict[str, Any]:
+    async def transcribe_audio(self, audio_content: bytes, language: str = None, model_name: str = None, device: str = None) -> Dict[str, Any]:
         """
         Transcribe audio content to text
         
@@ -32,20 +33,26 @@ class TranscriptionService:
         Returns:
             Dictionary containing transcription results
         """
+
+        logger.info(f"TranscriptionService transcribe_audio called with (model='{model_name}' lang='{language}')")
+
         if language is None:
             language = config.DEFAULT_LANGUAGE
         
         # Use provided model_name or fall back to config default
         if model_name is None:
-            model_name = config.WHISPER_MODEL
+            model_name = config.DEFAULT_WHISPER_MODEL
+
+        if device is None:
+            device = config.WHISPER_DEVICE
         
         # Check if we need to switch models
-        current_model_name = getattr(self.model, 'model_name', config.WHISPER_MODEL)
-        if model_name != current_model_name:
-            logger.info(f"Switching from model '{current_model_name}' to '{model_name}'")
+        if model_name != self.current_model_name:
+            logger.info(f"Switching from model '{self.current_model_name}' to '{model_name}'")
+            self.current_model_name = model_name
             self.model = WhisperModel(
                 model_name,
-                device=config.WHISPER_DEVICE,
+                device=device,
                 compute_type=config.WHISPER_COMPUTE_TYPE
             )
             

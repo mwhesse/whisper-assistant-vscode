@@ -179,8 +179,8 @@ class TestAPI:
         assert result["language"] == "fr"
     
     @patch('transcription_service.transcription_service.transcribe_audio')
-    def test_transcribe_audio_with_model_name(self, mock_transcribe):
-        """Test transcription with specific model name"""
+    def test_transcribe_audio_with_model(self, mock_transcribe):
+        """Test transcription with specific model"""
         mock_transcribe.return_value = {
             "text": "Hello from large model",
             "segments": [],
@@ -189,7 +189,7 @@ class TestAPI:
         
         audio_content = b"fake audio content"
         files = {"file": ("test.wav", io.BytesIO(audio_content), "audio/wav")}
-        data = {"model_name": "large", "language": "en"}
+        data = {"model": "large", "language": "en"}
         
         response = client.post("/v1/audio/transcriptions", files=files, data=data)
         
@@ -201,6 +201,6 @@ class TestAPI:
         # Verify the service was called with the correct parameters
         mock_transcribe.assert_called_once()
         call_args = mock_transcribe.call_args
-        assert len(call_args[0]) == 3  # audio_content, language, model_name
+        assert len(call_args[0]) == 3  # audio_content, language, model
         assert call_args[0][1] == "en"  # language
-        assert call_args[0][2] == "large"  # model_name
+        assert call_args[0][2] == "large"  # model

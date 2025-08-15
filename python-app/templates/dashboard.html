@@ -691,7 +691,7 @@
                 </div>
                 <div class="endpoint-description">
                     Transcribe audio files to text. Compatible with OpenAI Whisper API format.
-                    <br><strong>Parameters:</strong> file (audio), language (optional), model_name (optional)
+                    <br><strong>Parameters:</strong> file (audio), language (optional), model (optional)
                 </div>
             </div>
             
@@ -1021,7 +1021,7 @@
                 const wavBlob = await convertToWav(audioBlob);
                 formData.append('file', wavBlob, 'recording.wav');
                 formData.append('language', languageSelect.value);
-                formData.append('model_name', modelSelect.value);
+                formData.append('model', modelSelect.value);
                 
                 // Send to transcription API
                 const response = await fetch('/v1/audio/transcriptions', {

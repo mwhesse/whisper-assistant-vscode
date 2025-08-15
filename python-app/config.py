@@ -9,7 +9,6 @@ class Config:
     PORT: int = int(os.getenv("PORT", "4445"))
     
     # Whisper model settings
-    WHISPER_MODEL: str = os.getenv("WHISPER_MODEL", "base")
     WHISPER_DEVICE: str = os.getenv("WHISPER_DEVICE", "cpu")
     WHISPER_COMPUTE_TYPE: str = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
     
@@ -18,6 +17,7 @@ class Config:
     
     # Default language
     DEFAULT_LANGUAGE: str = os.getenv("DEFAULT_LANGUAGE", "en")
+    DEFAULT_WHISPER_MODEL: str = os.getenv("DEFAULT_WHISPER_MODEL", "base")
     
     # Temp file settings
     TEMP_FILE_SUFFIX: str = os.getenv("TEMP_FILE_SUFFIX", ".wav")

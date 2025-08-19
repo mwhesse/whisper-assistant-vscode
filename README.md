@@ -4,6 +4,10 @@
 
 # WhisperX Assistant: Your Voice-Driven Coding Companion
 
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=VS%20Marketplace&color=007ACC)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=Installs&color=blue)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
+[![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=Rating&color=yellow)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
+
 WhisperX Assistant is an extension for Visual Studio Code that transcribes your spoken words into text within the VSCode & Cursor editor. This hands-free approach to coding allows you to focus on your ideas instead of your typing.
 
 ✨ **Features:**

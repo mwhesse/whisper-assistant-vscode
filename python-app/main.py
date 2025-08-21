@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import logging
 import time
@@ -35,6 +36,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static files for images
+app.mount("/images", StaticFiles(directory="images"), name="images")
 
 
 @app.post("/v1/audio/transcriptions")
@@ -194,6 +198,11 @@ async def api_info():
         "health_check": "/v1/health",
         "transcribe": "/v1/audio/transcriptions"
     }
+
+@app.get("/favicon.ico")
+async def favicon():
+    """Serve favicon"""
+    return FileResponse("images/whisperx-assistant-64.png", media_type="image/png")
 
 
 if __name__ == "__main__":

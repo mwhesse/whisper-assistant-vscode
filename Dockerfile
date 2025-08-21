@@ -19,6 +19,9 @@ WORKDIR /app
 COPY python-app/requirements.txt .
 COPY python-app/ .
 
+# Copy images directory for web interface
+COPY images/ ./images/
+
 # Install Python dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt

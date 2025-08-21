@@ -4,6 +4,12 @@
 
 # WhisperX Assistant: Your Voice-Driven Coding Companion
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/whisperx-control-center.png" alt="WhisperX Control Center - Matrix Style Interface" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+</p>
+
+*Experience the futuristic Matrix-style control center for managing your AI models and voice transcription.*
+
 [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=VS%20Marketplace&color=007ACC)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
 [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=Installs&color=blue)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
 [![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=Rating&color=yellow)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)

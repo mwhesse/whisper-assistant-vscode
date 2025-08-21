@@ -38,6 +38,38 @@ WhisperX Assistant is an extension for Visual Studio Code that transcribes your 
 
 WhisperX Assistant can also be integrated with other powerful AI tools, such as Chat GPT-4 or [Cursor](https://www.cursor.so/), to create a dynamic, AI-driven development environment.
 
+## Table of Contents
+
+- [Powered by OpenAI Whisper](#powered-by-openai-whisper)
+- [Getting Started: Installation Instructions](#getting-started-installation-instructions)
+  - [Option A: SoX (Default - Recommended)](#option-a-sox-default---recommended)
+  - [Option B: Custom Recording Command (Alternative)](#option-b-custom-recording-command-alternative)
+- [How to Use WhisperX Assistant](#how-to-use-whisperx-assistant)
+- [Custom Recording Commands](#custom-recording-commands)
+  - [When to Use Custom Recording Commands](#when-to-use-custom-recording-commands)
+  - [Configuration](#configuration)
+  - [Platform-Specific Examples](#platform-specific-examples)
+  - [Troubleshooting Custom Commands](#troubleshooting-custom-commands)
+  - [Finding Your Audio Device](#finding-your-audio-device)
+- [Using WhisperX Assistant with Cursor.so](#using-whisperx-assistant-with-cursorso)
+- [Platform Compatibility](#platform-compatibility)
+- [Local Development with Faster Whisper](#local-development-with-faster-whisper)
+  - [Quick Start with Docker](#quick-start-with-docker)
+  - [External Model Storage](#external-model-storage)
+  - [Using Docker Compose](#using-docker-compose)
+  - [Docker Configuration Options](#docker-configuration-options)
+  - [Troubleshooting](#troubleshooting)
+  - [Advanced: Building from Source](#advanced-building-from-source)
+- [Running the Python App Outside Docker](#running-the-python-app-outside-docker)
+  - [Python App Structure](#python-app-structure)
+  - [Quick Start (Python App)](#quick-start-python-app)
+  - [Configuration Options](#configuration-options)
+  - [Benefits of Running Outside Docker](#benefits-of-running-outside-docker)
+  - [Docker Commands Quick Reference](#docker-commands-quick-reference)
+- [Multiple API Options](#multiple-api-options)
+  - [Configuring the API Provider](#configuring-the-api-provider)
+- [Attribution](#attribution)
+
 # Powered by OpenAI Whisper
 
 By default, WhisperX Assistant utilizes Whisper AI on your _local machine_, offering a free voice transcription service. For this, the base model of Whisper is used, balancing accuracy and performance. **In the future, we will support other models.**

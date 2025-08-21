@@ -153,16 +153,26 @@
             grid-area: main;
             background: #000815;
             padding: 1rem;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            gap: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        
+        .models-section {
+            flex-shrink: 0;
+        }
+        
+        .logs-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 0.5rem;
         }
         
         .models-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 0.5rem;
-            max-height: 300px;
             overflow: hidden;
         }
         
@@ -301,8 +311,21 @@
             color: #00ccff;
             font-family: 'Courier Prime', monospace;
             line-height: 1.4;
-            max-height: 150px;
             overflow-y: auto;
+        }
+        
+        .system-logs {
+            background: #000011;
+            border: 1px solid #003366;
+            border-radius: 4px;
+            padding: 1rem;
+            font-size: 0.8rem;
+            color: #00ccff;
+            font-family: 'Courier Prime', monospace;
+            line-height: 1.4;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 200px;
         }
         
         .transcription-output.empty {
@@ -383,8 +406,8 @@
             border: 1px solid #003366;
             border-radius: 4px;
             padding: 0.5rem;
-            max-height: 120px;
             overflow-y: auto;
+            overflow-x: hidden;
         }
         
         .endpoint-line {
@@ -489,28 +512,32 @@
         
         <!-- Main content -->
         <div class="main-content">
-            <div class="section-title">AI Model Repository</div>
-            <div class="models-grid">
-                {% for model in available_models %}
-                <div class="model-card {% if model.downloaded %}downloaded{% endif %}" onclick="handleModelAction('{{ model.name }}', {{ model.downloaded|lower }})">
-                    <div class="model-name">{{ model.name.upper() }}</div>
-                    <div class="model-info">{{ model.size }}</div>
-                    <div class="model-info">{{ model.relative_speed }}</div>
-                    {% if model.downloaded %}
-                    <div class="model-status status-downloaded">LOADED</div>
-                    {% else %}
-                    <div class="model-status status-download">DOWNLOAD</div>
-                    {% endif %}
+            <div class="models-section">
+                <div class="section-title">AI Model Repository</div>
+                <div class="models-grid">
+                    {% for model in available_models %}
+                    <div class="model-card {% if model.downloaded %}downloaded{% endif %}" onclick="handleModelAction('{{ model.name }}', {{ model.downloaded|lower }})">
+                        <div class="model-name">{{ model.name.upper() }}</div>
+                        <div class="model-info">{{ model.size }}</div>
+                        <div class="model-info">{{ model.relative_speed }}</div>
+                        {% if model.downloaded %}
+                        <div class="model-status status-downloaded">LOADED</div>
+                        {% else %}
+                        <div class="model-status status-download">DOWNLOAD</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
             
-            <div class="section-title">System Logs</div>
-            <div class="transcription-output empty" id="systemLogs">
-                > SYSTEM READY. AWAITING VOICE COMMAND...
-                > WHISPER AI MODELS OPERATIONAL
-                > EXTERNAL STORAGE: ENABLED
-                > TRANSCRIPTION ENGINE: STANDBY
+            <div class="logs-section">
+                <div class="section-title">System Logs</div>
+                <div class="system-logs empty" id="systemLogs">
+                    > SYSTEM READY. AWAITING VOICE COMMAND...
+                    > WHISPER AI MODELS OPERATIONAL
+                    > EXTERNAL STORAGE: ENABLED
+                    > TRANSCRIPTION ENGINE: STANDBY
+                </div>
             </div>
         </div>
         

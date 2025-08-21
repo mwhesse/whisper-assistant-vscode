@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ api_title }} - Dashboard</title>
+    <title>{{ api_title }} - SYSTEM CONTROL</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,885 +14,573 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
+            font-family: 'Courier Prime', 'Courier New', monospace;
+            background: #000011;
+            color: #00ff41;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        /* Matrix rain effect */
+        .matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.1;
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            color: white;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .dashboard-grid {
+        .main-container {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: 80px 1fr 60px;
+            grid-template-areas: 
+                "header header header"
+                "sidebar main panel"
+                "footer footer footer";
+            gap: 2px;
+            background: #001122;
+            border: 2px solid #00ff41;
         }
         
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+        /* Header */
+        .header {
+            grid-area: header;
+            background: linear-gradient(90deg, #001122 0%, #003344 50%, #001122 100%);
+            border-bottom: 2px solid #00ff41;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        .card h2 {
-            color: #4a5568;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00ff41, transparent);
+            animation: scan 4s linear infinite;
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: url('/images/whisperx-assistant-64.png') center/contain no-repeat;
+            filter: hue-rotate(120deg) brightness(1.5);
+        }
+        
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-shadow: 0 0 10px #00ff41;
+            letter-spacing: 2px;
         }
         
         .status-indicator {
-            display: inline-block;
             width: 12px;
             height: 12px;
+            background: #00ff41;
             border-radius: 50%;
-            margin-right: 8px;
+            margin-left: 1rem;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #00ff41;
         }
         
-        .status-online {
-            background-color: #48bb78;
-            box-shadow: 0 0 8px rgba(72, 187, 120, 0.6);
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: #000a11;
+            border-right: 1px solid #00ff41;
+            padding: 1rem;
+            overflow: hidden;
         }
         
-        .model-list {
-            list-style: none;
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #00ccff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        .model-item {
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            background: #f7fafc;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+        .system-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-line {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            font-size: 0.8rem;
+            padding: 0.2rem;
+            border-left: 2px solid #003344;
+            padding-left: 0.5rem;
         }
         
-        .model-current {
-            background: #e6fffa;
-            border-left-color: #38b2ac;
+        .stat-label {
+            color: #00aaaa;
+        }
+        
+        .stat-value {
+            color: #00ff41;
+            font-weight: bold;
+        }
+        
+        /* Main content */
+        .main-content {
+            grid-area: main;
+            background: #000815;
+            padding: 1rem;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 1rem;
+        }
+        
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.5rem;
+            max-height: 300px;
+            overflow: hidden;
+        }
+        
+        .model-card {
+            background: #001a2e;
+            border: 1px solid #003366;
+            border-radius: 4px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .model-card:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+        
+        .model-card.downloaded {
+            border-color: #00ff41;
+            background: #002211;
         }
         
         .model-name {
-            font-weight: 600;
-            color: #2d3748;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #00ccff;
+            margin-bottom: 0.3rem;
         }
         
-        .model-size {
-            font-size: 0.875rem;
-            color: #718096;
+        .model-info {
+            font-size: 0.7rem;
+            color: #00aaaa;
+            margin-bottom: 0.5rem;
         }
         
-        .current-badge {
-            background: #38b2ac;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .model-status {
+            font-size: 0.6rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
         }
         
-        .downloaded-badge {
-            background: #48bb78;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
+        .status-downloaded {
+            background: #00ff41;
+            color: #000011;
         }
         
-        .download-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .status-download {
+            background: #ff3366;
+            color: #ffffff;
             cursor: pointer;
-            margin-left: 0.5rem;
-            transition: background-color 0.2s;
+            transition: background 0.3s;
         }
         
-        .download-btn:hover {
-            background: #5a67d8;
+        .status-download:hover {
+            background: #ff5588;
         }
         
-        .download-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
+        /* Control Panel */
+        .control-panel {
+            grid-area: panel;
+            background: #000a11;
+            border-left: 1px solid #00ff41;
+            padding: 1rem;
+            overflow: hidden;
         }
         
-        .downloading {
-            background: #ed8936;
+        .recording-zone {
+            background: #001122;
+            border: 1px solid #003366;
+            border-radius: 4px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
         }
         
-        .model-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .transcription-section {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .record-btn {
-            background: #48bb78;
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
+        .record-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #003366, #0066cc);
+            border: 2px solid #00ccff;
+            color: #ffffff;
+            font-size: 1.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin: 1rem auto;
-            min-width: 200px;
             justify-content: center;
+            margin: 0 auto 1rem;
+            position: relative;
         }
         
-        .record-btn:hover {
-            background: #38a169;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+        .record-button:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
         }
         
-        .record-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        .record-button.recording {
+            background: linear-gradient(45deg, #cc3300, #ff6600);
+            animation: record-pulse 1s infinite;
         }
         
-        .record-btn.recording {
-            background: #f56565;
-            animation: pulse 2s infinite;
-        }
-        
-        .record-btn.recording:hover {
-            background: #e53e3e;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(245, 101, 101, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 101, 101, 0); }
-        }
-        
-        .transcription-controls {
+        .controls {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .language-select {
-            padding: 0.5rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            cursor: pointer;
-        }
-        
-        .language-select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .transcription-result {
-            background: #f8f9fa;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 1.5rem;
-            min-height: 120px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #2d3748;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        
-        .transcription-result.empty {
-            color: #a0aec0;
-            font-style: italic;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .transcription-result.processing {
-            background: #fff5f5;
-            border-color: #fed7d7;
-            color: #c53030;
-        }
-        
-        .audio-player {
-            margin: 1rem 0;
-            width: 100%;
-        }
-        
-        .audio-player audio {
-            width: 100%;
-            border-radius: 8px;
-        }
-        
-        .recording-indicator {
-            display: flex;
-            align-items: center;
             gap: 0.5rem;
-            color: #f56565;
-            font-weight: 600;
-            margin: 1rem 0;
         }
         
-        .recording-dot {
-            width: 12px;
-            height: 12px;
-            background: #f56565;
-            border-radius: 50%;
-            animation: pulse 1s infinite;
-        }
-        
-        .transcription-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .stat-box {
-            text-align: center;
+        .control-select {
+            background: #001122;
+            border: 1px solid #003366;
+            color: #00ff41;
             padding: 0.5rem;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+            border-radius: 2px;
         }
         
-        .stat-box .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #667eea;
+        .control-select:focus {
+            outline: none;
+            border-color: #00ff41;
         }
         
-        .stat-box .label {
-            font-size: 0.875rem;
-            color: #718096;
-            margin-top: 0.25rem;
-        }
-        
-        .logs-container {
-            max-height: 600px;
-            overflow-y: auto;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f8f9fa;
-        }
-        
-        .log-entry {
-            border-bottom: 1px solid #e2e8f0;
+        .transcription-output {
+            background: #000011;
+            border: 1px solid #003366;
+            border-radius: 4px;
             padding: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
+            min-height: 100px;
+            font-size: 0.8rem;
+            color: #00ccff;
+            font-family: 'Courier Prime', monospace;
+            line-height: 1.4;
+            max-height: 150px;
+            overflow-y: auto;
         }
         
-        .log-entry:hover {
-            background: #e6fffa;
+        .transcription-output.empty {
+            color: #006666;
+            font-style: italic;
         }
         
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-        
-        .log-header {
+        /* Footer */
+        .footer {
+            grid-area: footer;
+            background: #001122;
+            border-top: 1px solid #00ff41;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
+            padding: 0 2rem;
+            font-size: 0.7rem;
+            color: #00aaaa;
         }
         
-        .log-method {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
+        .command-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .prompt {
+            color: #00ff41;
+        }
+        
+        .typing-cursor {
+            width: 8px;
+            height: 12px;
+            background: #00ff41;
+            animation: blink 1s infinite;
+        }
+        
+        /* Animations */
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes record-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Matrix rain */
+        .matrix-char {
+            position: absolute;
+            color: #00ff41;
+            font-size: 14px;
+            font-family: 'Courier Prime', monospace;
+            animation: matrix-fall linear infinite;
+            opacity: 0.5;
+        }
+        
+        /* API endpoints display */
+        .api-display {
+            background: #000a11;
+            border: 1px solid #003366;
             border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            margin-right: 0.5rem;
-        }
-        
-        .log-method.GET { background: #c6f6d5; color: #22543d; }
-        .log-method.POST { background: #fed7d7; color: #742a2a; }
-        .log-method.PUT { background: #feebc8; color: #7b341e; }
-        .log-method.DELETE { background: #fed7d7; color: #742a2a; }
-        
-        .log-status {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: white;
-        }
-        
-        .log-status.success { background: #48bb78; }
-        .log-status.error { background: #f56565; }
-        .log-status.warning { background: #ed8936; }
-        
-        .log-path {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-weight: 600;
-            color: #4a5568;
-            margin: 0 0.5rem;
-        }
-        
-        .log-time {
-            font-size: 0.875rem;
-            color: #718096;
-        }
-        
-        .log-details {
-            display: none;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .log-details.expanded {
-            display: block;
-        }
-        
-        .log-detail-section {
-            margin-bottom: 1rem;
-        }
-        
-        .log-detail-title {
-            font-weight: 600;
-            color: #4a5568;
-            margin-bottom: 0.5rem;
-        }
-        
-        .log-detail-content {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            padding: 0.75rem;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 0.875rem;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            max-height: 200px;
+            padding: 0.5rem;
+            max-height: 120px;
             overflow-y: auto;
         }
         
-        .logs-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .logs-controls input, .logs-controls select {
-            padding: 0.5rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            font-size: 0.875rem;
-        }
-        
-        .api-section {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-        
-        .endpoint {
-            margin: 1rem 0;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+        .endpoint-line {
+            font-size: 0.7rem;
+            padding: 0.2rem;
+            color: #00aaaa;
+            border-left: 2px solid #003366;
+            padding-left: 0.5rem;
+            margin-bottom: 0.2rem;
         }
         
         .endpoint-method {
+            color: #ff6600;
+            font-weight: bold;
+            width: 45px;
             display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            margin-right: 1rem;
-        }
-        
-        .method-get {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-        
-        .method-post {
-            background: #fed7d7;
-            color: #742a2a;
         }
         
         .endpoint-path {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-weight: 600;
-            color: #4a5568;
+            color: #00ccff;
         }
         
-        .endpoint-description {
-            margin-top: 0.5rem;
-            color: #718096;
-            font-size: 0.875rem;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-        
-        .stat-label {
-            font-size: 0.875rem;
-            color: #718096;
-            margin-top: 0.25rem;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 3rem;
-            color: white;
-            opacity: 0.8;
-        }
-        
-        .footer a {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 250px 1fr 300px;
             }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+        }
+        
+        /* Glitch effect for special elements */
+        .glitch {
+            animation: glitch 2s linear infinite;
+        }
+        
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px, 0) skew(0deg); }
+            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+            62% { transform: translate(0, 0) skew(5deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Matrix background -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <div class="main-container">
+        <!-- Header -->
         <div class="header">
-            <h1>🎤 {{ api_title }}</h1>
-            <p>Audio Transcription API powered by OpenAI Whisper</p>
+            <div class="header-content">
+                <div class="logo"></div>
+                <div class="title">{{ api_title.split()[0] }} CONTROL SYSTEM</div>
+                <div class="status-indicator"></div>
+            </div>
         </div>
         
-        <div class="dashboard-grid">
-            <div class="card">
-                <h2>
-                    <span class="status-indicator status-online"></span>
-                    Service Status
-                </h2>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value">{{ status }}</div>
-                        <div class="stat-label">Status</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">{{ version }}</div>
-                        <div class="stat-label">Version</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">{{ device }}</div>
-                        <div class="stat-label">Device</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">{{ port }}</div>
-                        <div class="stat-label">Port</div>
-                    </div>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="section-title">System Status</div>
+            <div class="system-stats">
+                <div class="stat-line">
+                    <span class="stat-label">STATUS:</span>
+                    <span class="stat-value">{{ status }}</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">VERSION:</span>
+                    <span class="stat-value">{{ version }}</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">DEVICE:</span>
+                    <span class="stat-value">{{ device }}</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">PORT:</span>
+                    <span class="stat-value">{{ port }}</span>
                 </div>
             </div>
             
-            <div class="card">
-                <h2>🤖 Available Models</h2>
-                <ul class="model-list">
-                    {% for model in available_models %}
-                    <li class="model-item {% if model.name == current_model %}model-current{% endif %}">
-                        <div>
-                            <div class="model-name">{{ model.name }}</div>
-                            <div class="model-size">{{ model.size }} • {{ model.vram_required }} • {{ model.relative_speed }}</div>
-                        </div>
-                        <div class="model-actions">
-                            {% if model.name == current_model %}
-                            <span class="current-badge">CURRENT</span>
-                            {% endif %}
-                            {% if model.downloaded %}
-                            <span class="downloaded-badge">DOWNLOADED</span>
-                            {% else %}
-                            <button class="download-btn" onclick="downloadModel('{{ model.name }}')">
-                                DOWNLOAD
-                            </button>
-                            {% endif %}
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
+            <div class="section-title">API Endpoints</div>
+            <div class="api-display">
+                <div class="endpoint-line">
+                    <span class="endpoint-method">GET</span>
+                    <span class="endpoint-path">/v1/health</span>
+                </div>
+                <div class="endpoint-line">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/v1/audio/transcriptions</span>
+                </div>
+                <div class="endpoint-line">
+                    <span class="endpoint-method">GET</span>
+                    <span class="endpoint-path">/v1/models</span>
+                </div>
+                <div class="endpoint-line">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/v1/models/{id}/download</span>
+                </div>
+                <div class="endpoint-line">
+                    <span class="endpoint-method">GET</span>
+                    <span class="endpoint-path">/docs</span>
+                </div>
             </div>
         </div>
         
-        <div class="transcription-section">
-            <h2>🎙️ Test Transcription</h2>
-            <p style="text-align: center; color: #718096; margin-bottom: 2rem;">
-                Test the transcription API directly in your browser using your microphone
-            </p>
+        <!-- Main content -->
+        <div class="main-content">
+            <div class="section-title">AI Model Repository</div>
+            <div class="models-grid">
+                {% for model in available_models %}
+                <div class="model-card {% if model.downloaded %}downloaded{% endif %}" onclick="handleModelAction('{{ model.name }}', {{ model.downloaded|lower }})">
+                    <div class="model-name">{{ model.name.upper() }}</div>
+                    <div class="model-info">{{ model.size }}</div>
+                    <div class="model-info">{{ model.relative_speed }}</div>
+                    {% if model.downloaded %}
+                    <div class="model-status status-downloaded">LOADED</div>
+                    {% else %}
+                    <div class="model-status status-download">DOWNLOAD</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
             
-            <div class="transcription-controls">
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <select class="language-select" id="languageSelect">
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                        <option value="de">German</option>
-                        <option value="it">Italian</option>
-                        <option value="pt">Portuguese</option>
-                        <option value="ru">Russian</option>
-                        <option value="ja">Japanese</option>
-                        <option value="ko">Korean</option>
-                        <option value="zh">Chinese</option>
-                        <option value="ar">Arabic</option>
-                        <option value="hi">Hindi</option>
+            <div class="section-title">System Logs</div>
+            <div class="transcription-output empty" id="systemLogs">
+                > SYSTEM READY. AWAITING VOICE COMMAND...
+                > WHISPER AI MODELS OPERATIONAL
+                > EXTERNAL STORAGE: ENABLED
+                > TRANSCRIPTION ENGINE: STANDBY
+            </div>
+        </div>
+        
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="section-title">Voice Interface</div>
+            <div class="recording-zone">
+                <div class="record-button" id="recordBtn" onclick="toggleRecording()">
+                    <span id="recordIcon">🎤</span>
+                </div>
+                <div class="controls">
+                    <select class="control-select" id="languageSelect">
+                        <option value="en">ENGLISH</option>
+                        <option value="es">SPANISH</option>
+                        <option value="fr">FRENCH</option>
+                        <option value="de">GERMAN</option>
+                        <option value="it">ITALIAN</option>
+                        <option value="pt">PORTUGUESE</option>
+                        <option value="ru">RUSSIAN</option>
+                        <option value="ja">JAPANESE</option>
+                        <option value="zh">CHINESE</option>
                     </select>
                     
-                    <select class="language-select" id="modelSelect">
+                    <select class="control-select" id="modelSelect">
                         {% for model in available_models %}
-                        <option value="{{ model.name }}" {% if model.name == current_model %}selected{% endif %}>
-                            {{ model.name }}{% if not model.downloaded %} (Not Downloaded){% endif %}
+                        <option value="{{ model.name }}" {% if model.name == 'base' %}selected{% endif %}>
+                            {{ model.name.upper() }}{% if not model.downloaded %} (OFFLINE){% endif %}
                         </option>
                         {% endfor %}
                     </select>
                 </div>
-                
-                <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
-                    <span id="recordIcon">🎤</span>
-                    <span id="recordText">Start Recording</span>
-                </button>
-                
-                <div class="recording-indicator" id="recordingIndicator" style="display: none;">
-                    <div class="recording-dot"></div>
-                    <span>Recording... <span id="recordingTime">0:00</span></span>
-                </div>
             </div>
             
-            <div class="audio-player" id="audioPlayer" style="display: none;">
-                <audio controls id="audioPlayback"></audio>
-            </div>
-            
-            <div class="transcription-result empty" id="transcriptionResult">
-                Click "Start Recording" to begin testing transcription
-            </div>
-            
-            <div class="transcription-stats" id="transcriptionStats" style="display: none;">
-                <div class="stat-box">
-                    <div class="value" id="recordingDuration">-</div>
-                    <div class="label">Duration</div>
-                </div>
-                <div class="stat-box">
-                    <div class="value" id="transcriptionTime">-</div>
-                    <div class="label">Process Time</div>
-                </div>
-                <div class="stat-box">
-                    <div class="value" id="audioSize">-</div>
-                    <div class="label">Audio Size</div>
-                </div>
-                <div class="stat-box">
-                    <div class="value" id="detectedLanguage">-</div>
-                    <div class="label">Detected Lang</div>
-                </div>
+            <div class="section-title">Output</div>
+            <div class="transcription-output empty" id="transcriptionResult">
+                VOICE RECOGNITION OFFLINE
             </div>
         </div>
         
-        <div class="api-section">
-            <h2>🚀 API Endpoints</h2>
-            
-            <div class="endpoint">
-                <div>
-                    <span class="endpoint-method method-get">GET</span>
-                    <span class="endpoint-path">/</span>
-                </div>
-                <div class="endpoint-description">This dashboard - API information and status</div>
-            </div>
-            
-            <div class="endpoint">
-                <div>
-                    <span class="endpoint-method method-get">GET</span>
-                    <span class="endpoint-path">/v1/health</span>
-                </div>
-                <div class="endpoint-description">Health check endpoint</div>
-            </div>
-            
-            <div class="endpoint">
-                <div>
-                    <span class="endpoint-method method-post">POST</span>
-                    <span class="endpoint-path">/v1/audio/transcriptions</span>
-                </div>
-                <div class="endpoint-description">
-                    Transcribe audio files to text. Compatible with OpenAI Whisper API format.
-                    <br><strong>Parameters:</strong> file (audio), language (optional), model (optional)
-                </div>
-            </div>
-            
-            <div class="endpoint">
-                <div>
-                    <span class="endpoint-method method-get">GET</span>
-                    <span class="endpoint-path">/docs</span>
-                </div>
-                <div class="endpoint-description">Interactive API documentation (Swagger UI)</div>
-            </div>
-            
-            <div class="endpoint">
-                <div>
-                    <span class="endpoint-method method-get">GET</span>
-                    <span class="endpoint-path">/redoc</span>
-                </div>
-                <div class="endpoint-description">Alternative API documentation (ReDoc)</div>
-            </div>
-        </div>
-        
-        <div class="api-section">
-            <h2>📊 Transcription Logs</h2>
-            <p style="text-align: center; color: #718096; margin-bottom: 2rem;">
-                View and analyze transcription API requests/responses for debugging and monitoring
-            </p>
-            
-            <div class="logs-controls" style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center;">
-                <select id="methodFilter" class="language-select">
-                    <option value="">All Methods</option>
-                    <option value="GET">GET</option>
-                    <option value="POST">POST</option>
-                    <option value="PUT">PUT</option>
-                    <option value="DELETE">DELETE</option>
-                </select>
-                
-                <select id="statusFilter" class="language-select">
-                    <option value="">All Status</option>
-                    <option value="200">200 OK</option>
-                    <option value="400">400 Bad Request</option>
-                    <option value="404">404 Not Found</option>
-                    <option value="500">500 Server Error</option>
-                </select>
-                
-                <input type="text" id="pathFilter" placeholder="Filter by path..." class="language-select" style="min-width: 200px;">
-                
-                <button onclick="loadLogs()" class="download-btn" style="margin: 0;">Refresh Logs</button>
-                <button onclick="clearLogs()" class="download-btn" style="margin: 0; background: #f56565;">Clear All</button>
-            </div>
-            
-            <div class="logs-stats" id="logsStats" style="display: none;">
-                <div class="stats-grid" style="margin-bottom: 2rem;">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalRequests">0</div>
-                        <div class="stat-label">Total Requests</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="avgProcessingTime">0ms</div>
-                        <div class="stat-label">Avg Processing Time</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="successRate">0%</div>
-                        <div class="stat-label">Success Rate</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="logs-container" id="logsContainer">
-                <div style="text-align: center; color: #a0aec0; padding: 2rem;">
-                    Click "Refresh Logs" to load request logs
-                </div>
-            </div>
-        </div>
-        
+        <!-- Footer -->
         <div class="footer">
-            <p>
-                Powered by <a href="https://github.com/openai/whisper" target="_blank">OpenAI Whisper</a> 
-                and <a href="https://github.com/guillaumekln/faster-whisper" target="_blank">Faster Whisper</a>
-            </p>
+            <div class="command-line">
+                <span class="prompt">root@whisperx:~$</span>
+                <span id="commandText">system_status</span>
+                <div class="typing-cursor"></div>
+            </div>
+            <div>NEURAL NETWORK © {{ version }} | POWERED BY OPENAI WHISPER</div>
         </div>
     </div>
-    
+
     <script>
-        async function downloadModel(modelName) {
-            const button = event.target;
-            const originalText = button.textContent;
+        // Matrix rain effect
+        function createMatrixRain() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
             
-            // Update button state
-            button.disabled = true;
-            button.textContent = 'DOWNLOADING...';
-            button.classList.add('downloading');
-            
-            try {
-                const response = await fetch(`/v1/models/${modelName}/download`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok && result.success) {
-                    // Success - replace button with downloaded badge
-                    const actionsDiv = button.parentElement;
-                    button.remove();
-                    
-                    const badge = document.createElement('span');
-                    badge.className = 'downloaded-badge';
-                    badge.textContent = 'DOWNLOADED';
-                    actionsDiv.appendChild(badge);
-                    
-                    // Show success message
-                    showNotification(`Model "${modelName}" downloaded successfully!`, 'success');
-                } else {
-                    throw new Error(result.detail || result.message || 'Download failed');
-                }
-                
-            } catch (error) {
-                console.error('Download error:', error);
-                
-                // Reset button state
-                button.disabled = false;
-                button.textContent = originalText;
-                button.classList.remove('downloading');
-                
-                // Show error message
-                showNotification(`Failed to download model "${modelName}": ${error.message}`, 'error');
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixBg.appendChild(char);
             }
         }
         
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                color: white;
-                font-weight: 600;
-                z-index: 1000;
-                max-width: 400px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                transition: opacity 0.3s ease;
-            `;
-            
-            // Set background color based on type
-            if (type === 'success') {
-                notification.style.backgroundColor = '#48bb78';
-            } else if (type === 'error') {
-                notification.style.backgroundColor = '#f56565';
-            } else {
-                notification.style.backgroundColor = '#4299e1';
-            }
-            
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 5000);
-        }
-        
-        // Auto-refresh model status every 30 seconds
-        setInterval(async () => {
-            try {
-                const response = await fetch('/v1/models');
-                const data = await response.json();
-                
-                // Update download status for models that might have been downloaded
-                data.available_models.forEach(model => {
-                    const modelItem = document.querySelector(`[onclick="downloadModel('${model.name}')"]`);
-                    if (modelItem && model.downloaded) {
-                        const actionsDiv = modelItem.parentElement;
-                        modelItem.remove();
-                        
-                        const badge = document.createElement('span');
-                        badge.className = 'downloaded-badge';
-                        badge.textContent = 'DOWNLOADED';
-                        actionsDiv.appendChild(badge);
-                    }
-                });
-            } catch (error) {
-                console.log('Auto-refresh failed:', error);
-            }
-        }, 30000);
-        
-        // Transcription testing functionality
+        // Recording functionality
         let mediaRecorder;
         let audioChunks = [];
-        let recordingStartTime;
-        let recordingTimer;
         let isRecording = false;
         
         async function toggleRecording() {
@@ -903,20 +593,8 @@
         
         async function startRecording() {
             try {
-                // Request microphone access
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        autoGainControl: true
-                    }
-                });
-                
-                // Initialize MediaRecorder
-                mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'audio/webm;codecs=opus'
-                });
-                
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
                 
                 mediaRecorder.ondataavailable = (event) => {
@@ -926,36 +604,22 @@
                 };
                 
                 mediaRecorder.onstop = async () => {
-                    // Stop all tracks to release microphone
                     stream.getTracks().forEach(track => track.stop());
-                    
-                    // Create audio blob
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    
-                    // Show audio player
-                    const audioPlayer = document.getElementById('audioPlayer');
-                    const audioPlayback = document.getElementById('audioPlayback');
-                    audioPlayback.src = URL.createObjectURL(audioBlob);
-                    audioPlayer.style.display = 'block';
-                    
-                    // Send to transcription API
                     await transcribeAudio(audioBlob);
                 };
                 
-                // Start recording
                 mediaRecorder.start();
                 isRecording = true;
-                recordingStartTime = Date.now();
                 
-                // Update UI
-                updateRecordingUI(true);
-                
-                // Start timer
-                startRecordingTimer();
+                document.getElementById('recordBtn').classList.add('recording');
+                document.getElementById('recordIcon').textContent = '⏹️';
+                updateSystemLogs('> VOICE RECORDING INITIATED');
+                updateSystemLogs('> NEURAL NETWORK LISTENING...');
                 
             } catch (error) {
-                console.error('Error accessing microphone:', error);
-                showNotification('Error accessing microphone: ' + error.message, 'error');
+                console.error('Microphone error:', error);
+                updateSystemLogs('> ERROR: MICROPHONE ACCESS DENIED');
             }
         }
         
@@ -964,336 +628,141 @@
                 mediaRecorder.stop();
                 isRecording = false;
                 
-                // Update UI
-                updateRecordingUI(false);
-                
-                // Stop timer
-                clearInterval(recordingTimer);
+                document.getElementById('recordBtn').classList.remove('recording');
+                document.getElementById('recordIcon').textContent = '🎤';
+                updateSystemLogs('> RECORDING COMPLETED. PROCESSING...');
             }
-        }
-        
-        function updateRecordingUI(recording) {
-            const recordBtn = document.getElementById('recordBtn');
-            const recordIcon = document.getElementById('recordIcon');
-            const recordText = document.getElementById('recordText');
-            const recordingIndicator = document.getElementById('recordingIndicator');
-            
-            if (recording) {
-                recordBtn.classList.add('recording');
-                recordIcon.textContent = '⏹️';
-                recordText.textContent = 'Stop Recording';
-                recordingIndicator.style.display = 'flex';
-            } else {
-                recordBtn.classList.remove('recording');
-                recordIcon.textContent = '🎤';
-                recordText.textContent = 'Start Recording';
-                recordingIndicator.style.display = 'none';
-            }
-        }
-        
-        function startRecordingTimer() {
-            recordingTimer = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
-                const minutes = Math.floor(elapsed / 60);
-                const seconds = elapsed % 60;
-                document.getElementById('recordingTime').textContent =
-                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
         }
         
         async function transcribeAudio(audioBlob) {
-            const transcriptionResult = document.getElementById('transcriptionResult');
-            const transcriptionStats = document.getElementById('transcriptionStats');
             const languageSelect = document.getElementById('languageSelect');
             const modelSelect = document.getElementById('modelSelect');
             
-            // Show processing state
-            transcriptionResult.className = 'transcription-result processing';
-            transcriptionResult.textContent = 'Processing audio... Please wait.';
-            
-            const startTime = Date.now();
-            
             try {
-                // Prepare form data
                 const formData = new FormData();
-                
-                // Convert webm to wav for better compatibility
-                const wavBlob = await convertToWav(audioBlob);
-                formData.append('file', wavBlob, 'recording.wav');
+                formData.append('file', audioBlob, 'recording.webm');
                 formData.append('language', languageSelect.value);
                 formData.append('model', modelSelect.value);
                 
-                // Send to transcription API
+                updateSystemLogs('> TRANSMITTING TO AI CORE...');
+                
                 const response = await fetch('/v1/audio/transcriptions', {
                     method: 'POST',
                     body: formData
                 });
                 
                 const result = await response.json();
-                const processingTime = Date.now() - startTime;
                 
                 if (response.ok) {
-                    // Show transcription result
-                    transcriptionResult.className = 'transcription-result';
-                    transcriptionResult.textContent = result.text || 'No speech detected';
-                    
-                    // Update stats
-                    updateTranscriptionStats({
-                        duration: formatDuration((Date.now() - recordingStartTime) / 1000),
-                        processingTime: formatDuration(processingTime / 1000),
-                        audioSize: formatFileSize(wavBlob.size),
-                        detectedLanguage: result.language || languageSelect.value
-                    });
-                    
-                    transcriptionStats.style.display = 'grid';
-                    
+                    document.getElementById('transcriptionResult').textContent = result.text || 'NO SPEECH DETECTED';
+                    document.getElementById('transcriptionResult').classList.remove('empty');
+                    updateSystemLogs('> TRANSCRIPTION COMPLETE');
+                    updateSystemLogs(`> MODEL: ${modelSelect.value.toUpperCase()}`);
                 } else {
-                    throw new Error(result.detail || result.message || 'Transcription failed');
+                    throw new Error(result.detail || 'TRANSCRIPTION FAILED');
                 }
                 
             } catch (error) {
                 console.error('Transcription error:', error);
-                transcriptionResult.className = 'transcription-result';
-                transcriptionResult.textContent = 'Error: ' + error.message;
-                showNotification('Transcription failed: ' + error.message, 'error');
+                updateSystemLogs('> ERROR: ' + error.message.toUpperCase());
+                document.getElementById('transcriptionResult').textContent = 'SYSTEM ERROR';
             }
         }
         
-        async function convertToWav(webmBlob) {
-            // For now, return the original blob
-            // In a production environment, you might want to convert to WAV
-            // using a library like lamejs or by sending to a conversion endpoint
-            return webmBlob;
-        }
-        
-        
-        function formatDuration(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 B';
-            const k = 1024;
-            const sizes = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-        }
-        
-        // Check if selected model is downloaded
-        function checkModelAvailability() {
-            const modelSelect = document.getElementById('modelSelect');
-            const selectedOption = modelSelect.options[modelSelect.selectedIndex];
-            const isDownloaded = !selectedOption.text.includes('(Not Downloaded)');
-            
+        // Model management
+        async function handleModelAction(modelName, isDownloaded) {
             if (!isDownloaded) {
-                showNotification(`Warning: Model "${modelSelect.value}" is not downloaded. Download it first for better performance.`, 'error');
-                return false;
+                await downloadModel(modelName);
             }
-            return true;
         }
         
-        // Update transcription stats to include selected model
-        function updateTranscriptionStats(stats) {
-            const modelSelect = document.getElementById('modelSelect');
-            document.getElementById('recordingDuration').textContent = stats.duration;
-            document.getElementById('transcriptionTime').textContent = stats.processingTime;
-            document.getElementById('audioSize').textContent = stats.audioSize;
-            document.getElementById('detectedLanguage').textContent = stats.detectedLanguage.toUpperCase();
+        async function downloadModel(modelName) {
+            updateSystemLogs(`> INITIATING DOWNLOAD: ${modelName.toUpperCase()}`);
             
-            // Add model info to stats if not already present
-            if (!document.getElementById('selectedModel')) {
-                const statsContainer = document.getElementById('transcriptionStats');
-                const modelStatBox = document.createElement('div');
-                modelStatBox.className = 'stat-box';
-                modelStatBox.innerHTML = `
-                    <div class="value" id="selectedModel">${modelSelect.value}</div>
-                    <div class="label">Model Used</div>
-                `;
-                statsContainer.appendChild(modelStatBox);
-            } else {
-                document.getElementById('selectedModel').textContent = modelSelect.value;
+            try {
+                const response = await fetch(`/v1/models/${modelName}/download`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    updateSystemLogs(`> DOWNLOAD COMPLETE: ${modelName.toUpperCase()}`);
+                    // Update UI
+                    const modelCard = document.querySelector(`[onclick*="${modelName}"]`);
+                    if (modelCard) {
+                        modelCard.classList.add('downloaded');
+                        const statusEl = modelCard.querySelector('.model-status');
+                        statusEl.textContent = 'LOADED';
+                        statusEl.className = 'model-status status-downloaded';
+                    }
+                } else {
+                    throw new Error(result.detail || 'Download failed');
+                }
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                updateSystemLogs(`> ERROR DOWNLOADING ${modelName.toUpperCase()}: ${error.message}`);
             }
         }
         
-        // Check for microphone support on page load
+        // System logs
+        function updateSystemLogs(message) {
+            const logs = document.getElementById('systemLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.innerHTML += `\n[${timestamp}] ${message}`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+        
+        // Command line animation
+        const commands = [
+            'system_status',
+            'neural_net_active',
+            'whisper_ai_loaded',
+            'voice_interface_ready',
+            'model_repository_online'
+        ];
+        let commandIndex = 0;
+        
+        function rotateCommand() {
+            document.getElementById('commandText').textContent = commands[commandIndex];
+            commandIndex = (commandIndex + 1) % commands.length;
+        }
+        
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            createMatrixRain();
+            setInterval(rotateCommand, 3000);
+            
+            // Check microphone support
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                const recordBtn = document.getElementById('recordBtn');
-                recordBtn.disabled = true;
-                recordBtn.innerHTML = '<span>❌</span><span>Microphone not supported</span>';
-                showNotification('Microphone API not supported in this browser', 'error');
+                updateSystemLogs('> WARNING: MICROPHONE API NOT SUPPORTED');
+                document.getElementById('recordBtn').style.opacity = '0.5';
             }
-            
-            // Add model selection change handler
-            const modelSelect = document.getElementById('modelSelect');
-            modelSelect.addEventListener('change', () => {
-                checkModelAvailability();
-            });
-            
-            // Load logs on page load
-            loadLogs();
         });
         
-        // Logs functionality
-        async function loadLogs() {
-            const methodFilter = document.getElementById('methodFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-            const pathFilter = document.getElementById('pathFilter').value;
-            
+        // Auto-refresh model status
+        setInterval(async () => {
             try {
-                // Build query parameters
-                const params = new URLSearchParams();
-                params.append('limit', '50');
-                if (methodFilter) params.append('method', methodFilter);
-                if (statusFilter) params.append('status', statusFilter);
-                if (pathFilter) params.append('path', pathFilter);
-                
-                const response = await fetch(`/v1/logs?${params.toString()}`);
+                const response = await fetch('/v1/models');
                 const data = await response.json();
                 
-                if (response.ok) {
-                    displayLogs(data.logs);
-                    await loadLogStats();
-                } else {
-                    throw new Error(data.detail || 'Failed to load logs');
-                }
+                data.available_models.forEach(model => {
+                    const modelCard = document.querySelector(`[onclick*="${model.name}"]`);
+                    if (modelCard && model.downloaded) {
+                        modelCard.classList.add('downloaded');
+                        const statusEl = modelCard.querySelector('.model-status');
+                        if (statusEl.textContent !== 'LOADED') {
+                            statusEl.textContent = 'LOADED';
+                            statusEl.className = 'model-status status-downloaded';
+                        }
+                    }
+                });
             } catch (error) {
-                console.error('Error loading logs:', error);
-                showNotification('Failed to load logs: ' + error.message, 'error');
+                console.log('Model status update failed:', error);
             }
-        }
-        
-        async function loadLogStats() {
-            try {
-                const response = await fetch('/v1/logs/stats');
-                const stats = await response.json();
-                
-                if (response.ok) {
-                    displayLogStats(stats);
-                } else {
-                    throw new Error('Failed to load stats');
-                }
-            } catch (error) {
-                console.error('Error loading log stats:', error);
-            }
-        }
-        
-        function displayLogStats(stats) {
-            document.getElementById('totalRequests').textContent = stats.total_requests;
-            document.getElementById('avgProcessingTime').textContent = stats.avg_processing_time_ms + 'ms';
-            
-            // Calculate success rate
-            const successCodes = [200, 201, 202, 204];
-            const successCount = Object.entries(stats.status_codes)
-                .filter(([code]) => successCodes.includes(parseInt(code)))
-                .reduce((sum, [, count]) => sum + count, 0);
-            const successRate = stats.total_requests > 0 ?
-                Math.round((successCount / stats.total_requests) * 100) : 0;
-            document.getElementById('successRate').textContent = successRate + '%';
-            
-            document.getElementById('logsStats').style.display = 'block';
-        }
-        
-        function displayLogs(logs) {
-            const container = document.getElementById('logsContainer');
-            
-            if (logs.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #a0aec0; padding: 2rem;">No logs found matching the current filters</div>';
-                return;
-            }
-            
-            const logsHtml = logs.map(log => {
-                const statusClass = getStatusClass(log.response_status);
-                const timestamp = new Date(log.timestamp).toLocaleString();
-                
-                return `
-                    <div class="log-entry" onclick="toggleLogDetails('${log.request_id}')">
-                        <div class="log-header">
-                            <div>
-                                <span class="log-method ${log.method}">${log.method}</span>
-                                <span class="log-path">${log.path}</span>
-                                <span class="log-status ${statusClass}">${log.response_status}</span>
-                            </div>
-                            <div class="log-time">
-                                ${timestamp} • ${log.processing_time_ms.toFixed(1)}ms
-                            </div>
-                        </div>
-                        <div class="log-details" id="details-${log.request_id}">
-                            <div class="log-detail-section">
-                                <div class="log-detail-title">Request Headers</div>
-                                <div class="log-detail-content">${JSON.stringify(log.headers, null, 2)}</div>
-                            </div>
-                            ${log.query_params && Object.keys(log.query_params).length > 0 ? `
-                                <div class="log-detail-section">
-                                    <div class="log-detail-title">Query Parameters</div>
-                                    <div class="log-detail-content">${JSON.stringify(log.query_params, null, 2)}</div>
-                                </div>
-                            ` : ''}
-                            ${log.request_body ? `
-                                <div class="log-detail-section">
-                                    <div class="log-detail-title">Request Body</div>
-                                    <div class="log-detail-content">${log.request_body}</div>
-                                </div>
-                            ` : ''}
-                            <div class="log-detail-section">
-                                <div class="log-detail-title">Response Headers</div>
-                                <div class="log-detail-content">${JSON.stringify(log.response_headers, null, 2)}</div>
-                            </div>
-                            ${log.response_body ? `
-                                <div class="log-detail-section">
-                                    <div class="log-detail-title">Response Body</div>
-                                    <div class="log-detail-content">${log.response_body}</div>
-                                </div>
-                            ` : ''}
-                            <div class="log-detail-section">
-                                <div class="log-detail-title">Client Info</div>
-                                <div class="log-detail-content">IP: ${log.client_ip}
-User-Agent: ${log.user_agent}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = logsHtml;
-        }
-        
-        function toggleLogDetails(requestId) {
-            const details = document.getElementById(`details-${requestId}`);
-            details.classList.toggle('expanded');
-        }
-        
-        function getStatusClass(status) {
-            if (status >= 200 && status < 300) return 'success';
-            if (status >= 400 && status < 500) return 'warning';
-            if (status >= 500) return 'error';
-            return 'success';
-        }
-        
-        async function clearLogs() {
-            if (!confirm('Are you sure you want to clear all request logs?')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch('/v1/logs', { method: 'DELETE' });
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showNotification(`Cleared ${data.cleared_count} request logs`, 'success');
-                    document.getElementById('logsContainer').innerHTML =
-                        '<div style="text-align: center; color: #a0aec0; padding: 2rem;">All logs cleared. Make some requests to see new logs here.</div>';
-                    document.getElementById('logsStats').style.display = 'none';
-                } else {
-                    throw new Error(data.detail || 'Failed to clear logs');
-                }
-            } catch (error) {
-                console.error('Error clearing logs:', error);
-                showNotification('Failed to clear logs: ' + error.message, 'error');
-            }
-        }
+        }, 30000);
     </script>
 </body>
 </html>

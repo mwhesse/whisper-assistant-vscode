@@ -2,7 +2,7 @@
   "name": "whisperx-assistant",
   "displayName": "WhisperX Assistant",
   "description": "Leveraging OpenAI's Whisper to transcribe your speech, enhancing your coding efficiency and experience. (Enhanced version of Whisper Assistant with improved model selection and OpenAI compatibility.)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "publisher": "mwhesse",
   "icon": "images/whisperx-assistant.png",
   "repository": {

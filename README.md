@@ -10,9 +10,22 @@
 
 *Experience the futuristic Matrix-style control center for managing your AI models and voice transcription.*
 
+**🚀 To experience this control center:** Clone this repository from GitHub and build the Docker image locally. The web-based control center provides an interactive dashboard for model management, real-time transcription, and system monitoring.
+
+**📂 GitHub Repository:** [https://github.com/mwhesse/whisperx-assistant-vscode](https://github.com/mwhesse/whisperx-assistant-vscode)
+
+**Quick Setup:**
+```bash
+git clone https://github.com/mwhesse/whisperx-assistant-vscode.git
+cd whisperx-assistant-vscode
+docker compose --profile external up
+```
+Then visit `http://localhost:4445` to access the control center.
+
 [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=VS%20Marketplace&color=007ACC)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
 [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=Installs&color=blue)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
 [![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/mwhesse.whisperx-assistant?style=flat&logo=visual-studio-code&logoColor=white&label=Rating&color=yellow)](https://marketplace.visualstudio.com/items?itemName=mwhesse.whisperx-assistant)
+[![GitHub Stars](https://img.shields.io/github/stars/mwhesse/whisperx-assistant-vscode?style=flat&logo=github&logoColor=white&label=GitHub%20Stars&color=181717)](https://github.com/mwhesse/whisperx-assistant-vscode)
 
 WhisperX Assistant is an extension for Visual Studio Code that transcribes your spoken words into text within the VSCode & Cursor editor. This hands-free approach to coding allows you to focus on your ideas instead of your typing.
 

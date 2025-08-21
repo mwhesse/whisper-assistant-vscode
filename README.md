@@ -34,9 +34,9 @@ WhisperX Assistant is an extension for Visual Studio Code that transcribes your 
 - Cross-platform audio recording with SoX (default) or custom recording commands
 - Multiple API options: Local Docker, OpenAI, or Groq
 - Configurable recording tools (ffmpeg, arecord, etc.) for advanced users
-- Optimized for integration with AI coding assistants like Cursor
+- Optimized for integration with AI coding assistants like KiloCode or any other VS Code based AI agent extension for VS Code
 
-WhisperX Assistant can also be integrated with other powerful AI tools, such as Chat GPT-4 or [Cursor](https://www.cursor.so/), to create a dynamic, AI-driven development environment.
+WhisperX Assistant can also be integrated with other powerful AI tools, such as Claude Code or KiloCode or any other VS Code based AI agent extension for VS Code, to create a dynamic, AI-driven development environment.
 
 ## Table of Contents
 
@@ -51,7 +51,7 @@ WhisperX Assistant can also be integrated with other powerful AI tools, such as 
   - [Platform-Specific Examples](#platform-specific-examples)
   - [Troubleshooting Custom Commands](#troubleshooting-custom-commands)
   - [Finding Your Audio Device](#finding-your-audio-device)
-- [Using WhisperX Assistant with Cursor.so](#using-whisperx-assistant-with-cursorso)
+- [Using WhisperX Assistant with AI Agents](#using-whisperx-assistant-with-ai-agents)
 - [Platform Compatibility](#platform-compatibility)
 - [Local Development with Faster Whisper](#local-development-with-faster-whisper)
   - [Quick Start with Docker](#quick-start-with-docker)
@@ -150,7 +150,7 @@ Once initialization is complete, a microphone icon will appear in the bottom rig
 
 **Tip**: A good microphone will improve transcription accuracy, although it is not a requirement.
 
-**Tip**: For an optimal experience, consider using the Cursor.so application to directly call the Chat GPT-4 API for code instructions. This allows you to use your voice to instruct GPT to refactor your code, write unit tests, and implement various improvements.
+**Tip**: For an optimal experience, consider using KiloCode or any other VS Code based AI agent extension for VS Code to directly call the Chat API for code instructions. This allows you to use your voice to instruct your AI to refactor your code, write unit tests, and implement various improvements.
 
 ## Custom Recording Commands
 
@@ -246,19 +246,19 @@ arecord -l
 ffmpeg -list_devices true -f dshow -i dummy
 ```
 
-## Using WhisperX Assistant with Cursor.so
+## Using WhisperX Assistant with AI Agents
 
-To enhance your development experience with Cursor.so and WhisperX Assistant, follow these simple steps:
+To enhance your development experience with KiloCode or any other VS Code based AI agent extension for VS Code and WhisperX Assistant, follow these simple steps:
 
 1.  Start the recording: Press `Command+M` (Mac) or `Control+M` (Windows).
 2.  Speak your instructions clearly.
 3.  Stop the recording: Press `Command+M` (Mac) or `Control+M` (Windows).
     _Note: This initiates the transcription process._
-4.  Open the Cursor dialog: Press `Command+K` or `Command+L`.
+4.  Open the AI agent dialog: Press `Command+K` or `Command+L` (or the appropriate shortcut for your AI agent extension).
     _Important: Do this **before** the transcription completes._
-5.  The transcribed text will automatically populate the Cursor dialog. Here, you can edit the text or add files/docs, then press `Enter` to execute the GPT query.
+5.  The transcribed text will automatically populate the AI agent dialog. Here, you can edit the text or add files/docs, then press `Enter` to execute the query.
 
-By integrating Cursor.so with WhisperX Assistant, you can provide extensive instructions without the need for typing, significantly enhancing your development workflow.
+By integrating KiloCode or any other VS Code based AI agent extension for VS Code with WhisperX Assistant, you can provide extensive instructions without the need for typing, significantly enhancing your development workflow.
 
 # Platform Compatibility
 

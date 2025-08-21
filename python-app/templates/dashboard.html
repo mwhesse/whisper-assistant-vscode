@@ -573,7 +573,7 @@
                 <div class="section-title">AI Model Repository</div>
                 <div class="models-grid">
                     {% for model in available_models %}
-                    <div class="model-card {% if model.downloaded %}downloaded{% endif %}" onclick="handleModelAction('{{ model.name }}', {{ model.downloaded|lower }})">
+                    <div class="model-card {% if model.downloaded %}downloaded{% endif %}" data-model-name="{{ model.name }}" data-model-downloaded="{{ model.downloaded|lower }}" onclick="handleModelAction(this.dataset.modelName, this.dataset.modelDownloaded === 'true')">
                         <div class="model-name">{{ model.name.upper() }}</div>
                         <div class="model-info">{{ model.size }}</div>
                         <div class="model-info">{{ model.relative_speed }}</div>

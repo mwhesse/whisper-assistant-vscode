@@ -5,7 +5,7 @@
 # WhisperX Assistant: Your Voice-Driven Coding Companion
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/whisperx-control-center.png" alt="WhisperX Control Center - Matrix Style Interface" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+  <img src="https://raw.githubusercontent.com/mwhesse/whisperx-assistant-vscode/main/images/whisperx-control-center-v1.png" alt="WhisperX Control Center" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
 </p>
 
 *Experience the futuristic Matrix-style control center for managing your AI models and voice transcription.*

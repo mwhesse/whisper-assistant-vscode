@@ -23,8 +23,24 @@ COPY python-app/ .
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
 
-# Pre-download the model during build
-RUN python -c "from faster_whisper import WhisperModel; WhisperModel('base', device='cpu', compute_type='int8')"
+# Create volume mount points for external model storage
+# Users can mount their host directories here for persistent model storage
+VOLUME ["/app/models"]
+
+# Pre-download the model during build (only if external storage is not enabled)
+# This can be skipped by setting SKIP_MODEL_DOWNLOAD=true during build
+ARG SKIP_MODEL_DOWNLOAD=false
+RUN if [ "$SKIP_MODEL_DOWNLOAD" != "true" ]; then \
+        echo "Pre-downloading base model to container (set SKIP_MODEL_DOWNLOAD=true to skip)..." && \
+        python -c "from faster_whisper import WhisperModel; WhisperModel('base', device='cpu', compute_type='int8')"; \
+    else \
+        echo "Skipping model pre-download - models will be downloaded at runtime"; \
+    fi
+
+# Set default environment variables for model storage
+ENV ENABLE_EXTERNAL_STORAGE=false
+ENV MODELS_VOLUME_PATH=/app/models
+ENV HF_HOME=/app/models/.cache/huggingface
 
 # Expose the port
 EXPOSE 4445

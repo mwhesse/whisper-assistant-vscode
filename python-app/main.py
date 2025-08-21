@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory="templates")
 app = FastAPI(
     title=config.API_TITLE,
     version=config.API_VERSION,
-    description="A FastAPI service for audio transcription using OpenAI Whisper"
+    description="A FastAPI service for audio transcription using OpenAI Whisper with support for external model storage"
 )
 
 # Configure CORS
@@ -101,7 +101,11 @@ async def health_check():
         "status": "ok",
         "device": config.WHISPER_DEVICE,
         "version": config.API_VERSION,
-        "available_models": [model["name"] for model in models_service.get_available_models()]
+        "available_models": [model["name"] for model in models_service.get_available_models()],
+        "storage": {
+            "external_storage_enabled": config.ENABLE_EXTERNAL_STORAGE,
+            "effective_cache_dir": config.get_effective_cache_dir() if config.ENABLE_EXTERNAL_STORAGE else None
+        }
     }
 
 @app.get("/v1/models")

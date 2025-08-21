@@ -240,6 +240,73 @@ Then configure VSCode:
 
 That's it! You can now use the extension with your local Whisper server.
 
+### External Model Storage
+
+By default, models are downloaded and stored inside the Docker container, which means they're lost when the container is recreated. To persist models outside the container, you can use external storage.
+
+#### Benefits of External Model Storage
+
+- **Persistence**: Models survive container restarts and updates
+- **Performance**: Avoid re-downloading models on container recreation
+- **Storage Management**: Better control over where models are stored
+- **Sharing**: Share models between multiple container instances
+
+#### Quick Setup for External Storage
+
+**Basic external storage setup:**
+
+```bash
+# Create a directory for models on your host
+mkdir -p ~/.whisperx-models
+
+# Run with external storage enabled
+docker run -d -p 4445:4445 \
+  -e ENABLE_EXTERNAL_STORAGE=true \
+  -v ~/.whisperx-models:/app/models \
+  --name whisperx-assistant \
+  mwhesse/whisperx-assistant:latest
+```
+
+**Custom cache directory:**
+
+```bash
+# Create a custom directory for models
+mkdir -p /path/to/your/models
+
+# Run with custom external storage location
+docker run -d -p 4445:4445 \
+  -e ENABLE_EXTERNAL_STORAGE=true \
+  -e MODELS_CACHE_DIR=/app/models \
+  -v /path/to/your/models:/app/models \
+  --name whisperx-assistant \
+  mwhesse/whisperx-assistant:latest
+```
+
+#### Using Docker Compose
+
+For easier management, use the provided [`docker-compose.yml`](docker-compose.yml) file:
+
+```bash
+# External storage (recommended)
+docker compose --profile external up -d
+
+# Custom storage location
+HOME=/path/to/your/home docker compose --profile custom up -d
+
+# GPU-enabled with external storage
+docker compose --profile gpu up -d
+
+# Development mode with external storage
+docker compose --profile dev up -d
+```
+
+#### Environment Variables for Model Storage
+
+- `ENABLE_EXTERNAL_STORAGE`: Enable/disable external storage (default: `false`)
+- `MODELS_CACHE_DIR`: Custom cache directory path inside container (default: `/app/models`)
+- `MODELS_VOLUME_PATH`: Volume mount path inside container (default: `/app/models`)
+- `HF_HOME`: HuggingFace cache directory (auto-configured when external storage is enabled)
+
 ### Docker Configuration Options
 
 #### Memory Limits
@@ -288,7 +355,9 @@ docker run -d -p 4445:4445 mwhesse/whisperx-assistant:latest
    curl http://localhost:4445/v1/health
    ```
 
-2. Common issues:
+2. **Common Issues:**
+
+   **Server Issues:**
    - **First startup delay**: The model is downloaded on first use, which may take a few minutes
    - **Memory issues**: Try using the `--memory=4g` flag as shown above
    - **Port conflicts**: If port 4445 is in use, you can map to a different port:
@@ -296,6 +365,61 @@ docker run -d -p 4445:4445 mwhesse/whisperx-assistant:latest
          docker run -d -p 5000:4445 mwhesse/whisperx-assistant:latest
          ```
          Then update the custom endpoint in VSCode settings to `http://localhost:5000`
+
+   **Model Storage Issues:**
+   - **Models not persisting**: Ensure you're using the `-v` flag to mount a host directory when external storage is enabled
+   - **Permission errors**: Make sure the mounted directory has proper permissions:
+     ```bash
+     mkdir -p ~/.whisperx-models
+     chmod 755 ~/.whisperx-models
+     ```
+   - **Models not found after restart**: Check that the volume mount path is correct and the directory exists
+   - **Storage location confusion**: Verify environment variables are set correctly:
+     ```bash
+     docker exec whisperx-assistant env | grep -E "(ENABLE_EXTERNAL_STORAGE|MODELS_CACHE_DIR|HF_HOME)"
+     ```
+   - **Disk space issues**: Large models require significant space (up to 3GB for large models). Check available space:
+     ```bash
+     df -h ~/.whisperx-models
+     ```
+   - **Multiple model locations**: If models appear in different locations, check the priority order in logs:
+     ```bash
+     docker logs whisperx-assistant | grep -i "cache directory"
+     ```
+
+3. **Debugging Model Storage:**
+
+   ```bash
+   # Check what models are detected as downloaded
+   curl http://localhost:4445/v1/models/downloaded
+   
+   # Check model storage configuration
+   docker exec whisperx-assistant env | grep -E "(ENABLE_|MODELS_|HF_)"
+   
+   # List files in external storage
+   ls -la ~/.whisperx-models/
+   
+   # Check container logs for storage-related messages
+   docker logs whisperx-assistant | grep -i "storage\|cache\|model"
+   ```
+
+4. **Migrating Existing Models:**
+
+   If you have models in the container and want to move them to external storage:
+   
+   ```bash
+   # Copy models from running container to host
+   docker cp whisperx-assistant:/root/.cache/huggingface ~/.whisperx-models/
+   
+   # Restart container with external storage
+   docker stop whisperx-assistant
+   docker rm whisperx-assistant
+   docker run -d -p 4445:4445 \
+     -e ENABLE_EXTERNAL_STORAGE=true \
+     -v ~/.whisperx-models:/app/models \
+     --name whisperx-assistant \
+     mwhesse/whisperx-assistant:latest
+   ```
 
 ### Advanced: Building from Source
 

@@ -1,12 +1,13 @@
 """
 Service for managing Whisper model information
 """
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import logging
 import os
 import asyncio
 from pathlib import Path
 from faster_whisper import WhisperModel
+from config import config
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +77,25 @@ class ModelsService:
     
     def __init__(self):
         """Initialize the models service"""
+        self._setup_cache_environment()
         logger.info(f"Models service initialized")
+        logger.info(f"External storage enabled: {config.ENABLE_EXTERNAL_STORAGE}")
+        if config.ENABLE_EXTERNAL_STORAGE:
+            effective_cache_dir = config.get_effective_cache_dir()
+            logger.info(f"Effective cache directory: {effective_cache_dir}")
+    
+    def _setup_cache_environment(self):
+        """Setup cache environment variables for external storage"""
+        if config.ENABLE_EXTERNAL_STORAGE:
+            effective_cache_dir = config.get_effective_cache_dir()
+            if effective_cache_dir:
+                # Set HuggingFace environment variables to use external storage
+                os.environ["HF_HOME"] = effective_cache_dir
+                os.environ["TRANSFORMERS_CACHE"] = effective_cache_dir
+                logger.info(f"Set cache environment variables to: {effective_cache_dir}")
+                
+                # Ensure the directory exists
+                Path(effective_cache_dir).mkdir(parents=True, exist_ok=True)
     
     def get_available_models(self) -> List[Dict[str, Any]]:
         """Get list of all available Whisper models"""
@@ -105,25 +124,50 @@ class ModelsService:
         return recommendations.get(use_case, "base")
     
     def _get_model_cache_paths(self, model_name: str) -> List[Path]:
-        """Get possible cache paths for a model"""
-        # HuggingFace cache directory
-        hf_cache = os.environ.get("HF_HOME", os.path.expanduser("~/.cache/huggingface"))
+        """Get possible cache paths for a model, prioritizing external storage when enabled"""
+        possible_paths = []
         
-        # Possible path structures for faster-whisper models
-        # Based on actual cache structure: models--guillaumekln--faster-whisper-{model_name}
-        possible_paths = [
-            # Current actual structure (guillaumekln is the maintainer of faster-whisper)
-            Path(hf_cache) / "hub" / f"models--guillaumekln--faster-whisper-{model_name}",
-            # Legacy/alternative structures
-            Path(hf_cache) / "hub" / f"models--Systran--faster-whisper-{model_name}",
-            Path(hf_cache) / "hub" / f"models--openai--whisper-{model_name}",
-            Path(hf_cache) / "transformers" / f"models--guillaumekln--faster-whisper-{model_name}",
-            Path(hf_cache) / "transformers" / f"models--Systran--faster-whisper-{model_name}",
-            Path(hf_cache) / "transformers" / f"models--openai--whisper-{model_name}",
-            # Also check for direct model name in case of different caching
-            Path(hf_cache) / model_name,
-            Path(hf_cache) / f"faster-whisper-{model_name}",
+        # If external storage is enabled, prioritize external paths
+        if config.ENABLE_EXTERNAL_STORAGE:
+            effective_cache_dir = config.get_effective_cache_dir()
+            if effective_cache_dir:
+                cache_base = Path(effective_cache_dir)
+                # Add external storage paths first (highest priority)
+                # Account for the .cache/huggingface subdirectory structure
+                possible_paths.extend([
+                    cache_base / ".cache" / "huggingface" / "hub" / f"models--guillaumekln--faster-whisper-{model_name}",
+                    cache_base / ".cache" / "huggingface" / "hub" / f"models--Systran--faster-whisper-{model_name}",
+                    cache_base / ".cache" / "huggingface" / "hub" / f"models--openai--whisper-{model_name}",
+                    cache_base / "hub" / f"models--guillaumekln--faster-whisper-{model_name}",
+                    cache_base / "hub" / f"models--Systran--faster-whisper-{model_name}",
+                    cache_base / "hub" / f"models--openai--whisper-{model_name}",
+                    cache_base / "transformers" / f"models--guillaumekln--faster-whisper-{model_name}",
+                    cache_base / "transformers" / f"models--Systran--faster-whisper-{model_name}",
+                    cache_base / "transformers" / f"models--openai--whisper-{model_name}",
+                    cache_base / model_name,
+                    cache_base / f"faster-whisper-{model_name}",
+                ])
+        
+        # Add standard HuggingFace cache paths as fallback
+        hf_cache = os.environ.get("HF_HOME", os.path.expanduser("~/.cache/huggingface"))
+        hf_cache_base = Path(hf_cache)
+        
+        # Only add these if they're not already added (avoid duplicates)
+        standard_paths = [
+            hf_cache_base / "hub" / f"models--guillaumekln--faster-whisper-{model_name}",
+            hf_cache_base / "hub" / f"models--Systran--faster-whisper-{model_name}",
+            hf_cache_base / "hub" / f"models--openai--whisper-{model_name}",
+            hf_cache_base / "transformers" / f"models--guillaumekln--faster-whisper-{model_name}",
+            hf_cache_base / "transformers" / f"models--Systran--faster-whisper-{model_name}",
+            hf_cache_base / "transformers" / f"models--openai--whisper-{model_name}",
+            hf_cache_base / model_name,
+            hf_cache_base / f"faster-whisper-{model_name}",
         ]
+        
+        # Filter out duplicates while maintaining order
+        for path in standard_paths:
+            if path not in possible_paths:
+                possible_paths.append(path)
         
         return possible_paths
     
@@ -136,7 +180,7 @@ class ModelsService:
             # Check possible cache paths
             for model_path in self._get_model_cache_paths(model_name):
                 if model_path.exists():
-                    # Look for model files
+                    # Look for model files, including in snapshots subdirectories
                     model_files = (
                         list(model_path.rglob("*.bin")) +
                         list(model_path.rglob("*.safetensors")) +
@@ -145,18 +189,49 @@ class ModelsService:
                         list(model_path.rglob("*.ctranslate2"))  # CT2 format files
                     )
                     if len(model_files) > 0:
-                        logger.debug(f"Found model {model_name} at {model_path}")
+                        logger.debug(f"Found model {model_name} at {model_path} with {len(model_files)} model files")
                         return True
+                
+                # Also check for HuggingFace snapshots structure specifically
+                snapshots_path = model_path / "snapshots"
+                if snapshots_path.exists():
+                    # Look for any snapshot directory that contains model files
+                    for snapshot_dir in snapshots_path.iterdir():
+                        if snapshot_dir.is_dir():
+                            snapshot_files = (
+                                list(snapshot_dir.rglob("*.bin")) +
+                                list(snapshot_dir.rglob("*.safetensors")) +
+                                list(snapshot_dir.rglob("model.bin")) +
+                                list(snapshot_dir.rglob("pytorch_model.bin")) +
+                                list(snapshot_dir.rglob("*.ctranslate2"))
+                            )
+                            if len(snapshot_files) > 0:
+                                logger.debug(f"Found model {model_name} in snapshot at {snapshot_dir} with {len(snapshot_files)} model files")
+                                return True
             
             # Also check if there's a simple model directory with the model name
-            # in common cache locations
-            common_cache_dirs = [
+            # in common cache locations, prioritizing external storage
+            common_cache_dirs = []
+            
+            # If external storage is enabled, check it first
+            if config.ENABLE_EXTERNAL_STORAGE:
+                effective_cache_dir = config.get_effective_cache_dir()
+                if effective_cache_dir and Path(effective_cache_dir).exists():
+                    common_cache_dirs.append(effective_cache_dir)
+            
+            # Add standard cache directories as fallback
+            standard_cache_dirs = [
                 os.path.expanduser("~/.cache/huggingface"),
                 os.path.expanduser("~/.cache/whisper"),
                 os.path.expanduser("~/.local/share/whisper"),
                 "/tmp/whisper",
                 "./models"  # Local models directory
             ]
+            
+            # Filter out duplicates while maintaining priority order
+            for cache_dir in standard_cache_dirs:
+                if cache_dir not in common_cache_dirs:
+                    common_cache_dirs.append(cache_dir)
             
             for cache_dir in common_cache_dirs:
                 cache_path = Path(cache_dir)

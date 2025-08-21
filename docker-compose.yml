@@ -1,0 +1,85 @@
+services:
+  # Default configuration - models stored inside container (current behavior)
+  whisperx-assistant-default:
+    build: .
+    ports:
+      - "4445:4445"
+    environment:
+      - ENABLE_EXTERNAL_STORAGE=false
+    profiles:
+      - default
+
+  # External storage configuration - models stored on host filesystem
+  whisperx-assistant-external:
+    build: .
+    ports:
+      - "4445:4445"
+    environment:
+      - ENABLE_EXTERNAL_STORAGE=true
+      - MODELS_CACHE_DIR=/app/models
+    volumes:
+      - ./whisperx-models:/app/models
+    profiles:
+      - external
+
+  # Custom cache directory configuration
+  whisperx-assistant-custom:
+    build:
+      context: .
+      args:
+        SKIP_MODEL_DOWNLOAD: "true"
+    ports:
+      - "4445:4445"
+    environment:
+      - ENABLE_EXTERNAL_STORAGE=true
+      - MODELS_CACHE_DIR=/app/custom-models
+      - HF_HOME=/app/custom-models/.cache/huggingface
+    volumes:
+      - ${HOME}/.whisperx-models:/app/custom-models
+    profiles:
+      - custom
+
+  # GPU-enabled with external storage
+  whisperx-assistant-gpu:
+    build: .
+    ports:
+      - "4445:4445"
+    environment:
+      - ENABLE_EXTERNAL_STORAGE=true
+      - MODELS_CACHE_DIR=/app/models
+      - WHISPER_DEVICE=cuda
+      - WHISPER_COMPUTE_TYPE=float16
+    volumes:
+      - ./whisperx-models:/app/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    profiles:
+      - gpu
+
+  # Development mode - skip model pre-download, use external storage
+  whisperx-assistant-dev:
+    build:
+      context: .
+      args:
+        SKIP_MODEL_DOWNLOAD: "true"
+    ports:
+      - "4445:4445"
+    environment:
+      - ENABLE_EXTERNAL_STORAGE=true
+      - MODELS_CACHE_DIR=/app/models
+      - DEFAULT_WHISPER_MODEL=tiny
+    volumes:
+      - ./whisperx-models:/app/models
+      - ./python-app:/app:ro  # Mount source code for development
+    profiles:
+      - dev
+
+# Named volumes for easier management
+volumes:
+  whisperx-models:
+    driver: local
